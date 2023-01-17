@@ -1,5 +1,6 @@
 package com.iarlaith.personalassistant
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -14,8 +15,9 @@ class MainActivity : AppCompatActivity() {
 
     private var isValid = false
     private var counter = 3
+    //lateinit var authentication: Authentication
 
-
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -30,11 +32,24 @@ class MainActivity : AppCompatActivity() {
         val sharedPreferences = getSharedPreferences("AuthenticationDB", Context.MODE_PRIVATE)
         val spEditor = sharedPreferences.edit()
 
+        var authentication =  Authentication()
+
         if(sharedPreferences != null){
-            val persistedName = sharedPreferences.getString("Name", "")
-            val persistedUsername = sharedPreferences.getString("Username", "")
-            val persistedPassword = sharedPreferences.getString("Password", "")
-            val authentication = Authentication(persistedName, persistedUsername, persistedPassword)
+
+            val spMap: Map<String, *> = sharedPreferences.all
+
+            if(spMap.isNotEmpty()){
+                if (authentication != null) {
+                    authentication.loadAuthenications(spMap)
+                }
+            }
+
+            val persistedUsername = sharedPreferences.getString("MostRecentUsername", "")
+            val persistedPassword = sharedPreferences.getString("MostRecentPassword", "")
+
+            if (authentication != null) {
+                authentication.addAuthentication(persistedUsername, persistedPassword)
+            }
             intent.putExtra("authentication", authentication)
 
             if(sharedPreferences.getBoolean("RememberMeCB", false)){
@@ -43,21 +58,24 @@ class MainActivity : AppCompatActivity() {
                 rememberMeCB.isChecked = true
             }
         }
+
         loginButton.setOnClickListener {
-            var inputUsername = username.text.toString()
-            var inputPassword = password.text.toString()
+            val inputUsername = username.text.toString()
+            val inputPassword = password.text.toString()
 
             if (inputUsername.isEmpty() || inputPassword.isEmpty()){
                 Toast.makeText(this@MainActivity, "Please enter both Username & Password", Toast.LENGTH_SHORT).show()
             }
             else{
-                isValid = validate(inputUsername, inputPassword)
+                if (authentication != null) {
+                    isValid = authentication.verifyAuthentication(inputUsername, inputPassword)
+                }
 
                 if(!isValid){
                     counter--
                     Toast.makeText(this@MainActivity, "Incorrect Username or Password", Toast.LENGTH_SHORT).show()
 
-                    attempts.setText("Attempts Remaining: " + counter)
+                    attempts.text = "Attempts Remaining: " + counter
 
                     if(counter == 0){
                         loginButton.isEnabled = false
@@ -67,6 +85,8 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this@MainActivity, "Logged in", Toast.LENGTH_SHORT).show()
 
                     spEditor.putBoolean("RememberMeCB", rememberMeCB.isChecked)
+                    spEditor.putString("MostRecentUsername", inputUsername)
+                    spEditor.putString("MostRecentPassword", inputPassword)
                     spEditor.apply()
 
                     val intent = Intent(this, HomePageActivity::class.java)
@@ -84,11 +104,8 @@ class MainActivity : AppCompatActivity() {
     private fun validate(userName: String, userPassword: String): Boolean {
         val auth = intent.getSerializableExtra("authentication") as? Authentication
         if (auth != null) {
-            if (userName.equals(auth.username) && userPassword.equals(auth.password)){
-                return true
-            }
+            return auth.verifyAuthentication(userName, userPassword)
         }
-
         return false
     }
 }
