@@ -16,17 +16,17 @@ public class Authentication implements Serializable {
 
     HashMap<String, String> authenticationMapper = new HashMap<String, String>();
 
-    public void addAuthentication(String username, String password){
-        authenticationMapper.put(username, password);
+    public void addAuthentication(String email, String password){
+        authenticationMapper.put(email, password);
     }
 
-    public boolean checkUsername(String username){
-        return authenticationMapper.containsKey(username);
+    public boolean checkEmail(String email){
+        return authenticationMapper.containsKey(email);
     }
 
-    public boolean verifyAuthentication(String username, String password){
-        if(authenticationMapper.containsKey(username)){
-            return password.equals(authenticationMapper.get(username));
+    public boolean verifyAuthentication(String email, String password){
+        if(authenticationMapper.containsKey(email)){
+            return password.equals(authenticationMapper.get(email));
         }
         return false;
     }
