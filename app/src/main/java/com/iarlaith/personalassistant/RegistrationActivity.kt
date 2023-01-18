@@ -27,6 +27,7 @@ class RegistrationActivity : AppCompatActivity() {
         val password1 = findViewById<EditText>(R.id.etRegisterPassword1)
         val password2 = findViewById<EditText>(R.id.etRegisterPassword2)
         val registerButton = findViewById<Button>(R.id.btnRegister)
+        val backButton = findViewById<Button>(R.id.btnBackReg)
         var authentication =  Authentication()
         fireAuth = Firebase.auth
 
@@ -35,55 +36,52 @@ class RegistrationActivity : AppCompatActivity() {
 
         if (sharedPreferences != null) {
             val preferencesMap = sharedPreferences.all
-            if (preferencesMap.size != 0) {
+            if (preferencesMap.isNotEmpty()) {
                 authentication.loadAuthenications(preferencesMap)
             }
         }
 
         registerButton.setOnClickListener {
-            Toast.makeText(this@RegistrationActivity, "Register button clicked", Toast.LENGTH_SHORT).show()
             val registerEmail = email.text.toString()
-            println("1")
             val registerPassword1 = password1.text.toString()
-            println("2")
             val registerPassword2 = password2.text.toString()
-            println("3")
 
             if(validateName(registerEmail) && validatePass(registerPassword1, registerPassword2)){
-                println("4")
-                if (authentication != null) {
-                    println("5")
-                    if(authentication.checkEmail(registerEmail)){
-                        println("6")
-                        Toast.makeText(this@RegistrationActivity, "email not available", Toast.LENGTH_SHORT).show()
-                    } else{
-                        println("7")
-                        authentication.addAuthentication(registerEmail, registerPassword1)
-                        spEditor.putString(registerEmail, registerPassword1)
-                        spEditor.apply()
-                        // TODO Upload data to DB
-                        fireAuth.createUserWithEmailAndPassword(registerEmail, registerPassword1)
-                            .addOnCompleteListener(this) { task ->
-                                if (task.isSuccessful) {
-                                    // Sign in success, update UI with the signed-in user's information
-                                    Log.d(TAG, "createUserWithEmail:success")
-                                    val user = fireAuth.currentUser
-                                    updateUI(user)
-                                } else {
-                                    // If sign in fails, display a message to the user.
-                                    Log.w(TAG, "createUserWithEmail:failure", task.exception)
-                                    Toast.makeText(baseContext, "Authentication failed.",
-                                        Toast.LENGTH_SHORT).show()
-                                    updateUI(null)
-                                }
+                if(authentication.checkEmail(registerEmail)){
+                    Toast.makeText(this@RegistrationActivity, "email not available", Toast.LENGTH_SHORT).show()
+                } else{
+                    authentication.addAuthentication(registerEmail, registerPassword1)
+                    spEditor.putString(registerEmail, registerPassword1)
+                    spEditor.apply()
+                    println("1")
+                    fireAuth.createUserWithEmailAndPassword(registerEmail, registerPassword1)
+                        .addOnCompleteListener(this) { task ->
+                            if (task.isSuccessful) {
+                                println("2")
+                                // Sign in success, update UI with the signed-in user's information
+                                Log.d(TAG, "createUserWithEmail:success")
+                                Toast.makeText(this@RegistrationActivity, "Email Registered to DB", Toast.LENGTH_SHORT).show()
+                                val user = fireAuth.currentUser
+                                updateUI(user)
+                            } else {
+                                println("3")
+                                // If sign in fails, display a message to the user.
+                                Log.w(TAG, "createUserWithEmail:failure", task.exception)
+                                Toast.makeText(this@RegistrationActivity, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show()
+                                updateUI(null)
                             }
-                        // TODO Upload data to DB
-                        val intent = Intent(this, MainActivity::class.java)
-                        intent.putExtra("authentication", authentication)
-                        startActivity(intent)
-                    }
+                        }
+                    val intent = Intent(this, MainActivity::class.java)
+                    intent.putExtra("authentication", authentication)
+                    startActivity(intent)
                 }
             }
+        }
+
+        backButton.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
         }
     }
 
