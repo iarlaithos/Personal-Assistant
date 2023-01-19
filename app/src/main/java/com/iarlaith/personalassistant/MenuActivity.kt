@@ -7,6 +7,8 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 class MenuActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,6 +19,7 @@ class MenuActivity : AppCompatActivity() {
         val homeButton = findViewById<ImageView>(R.id.MbtnHome)
 
         signOut.setOnClickListener {
+            Firebase.auth.signOut()
             val builder = AlertDialog.Builder(this)
             builder.setMessage("Are you sure you want to Sign Out?")
                 .setCancelable(false)

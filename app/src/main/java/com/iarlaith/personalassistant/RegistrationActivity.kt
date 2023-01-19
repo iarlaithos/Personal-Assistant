@@ -12,17 +12,24 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.delay
+import java.util.concurrent.TimeUnit
 
 
 class RegistrationActivity : AppCompatActivity() {
 
     private lateinit var fireAuth: FirebaseAuth
+    private lateinit var dbRef: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_registration)
 
+        val name = findViewById<EditText>(R.id.etRegisterName)
         val email = findViewById<EditText>(R.id.etRegisterEmail)
         val password1 = findViewById<EditText>(R.id.etRegisterPassword1)
         val password2 = findViewById<EditText>(R.id.etRegisterPassword2)
@@ -42,6 +49,7 @@ class RegistrationActivity : AppCompatActivity() {
         }
 
         registerButton.setOnClickListener {
+            val registerName = name.text.toString()
             val registerEmail = email.text.toString()
             val registerPassword1 = password1.text.toString()
             val registerPassword2 = password2.text.toString()
@@ -53,25 +61,25 @@ class RegistrationActivity : AppCompatActivity() {
                     authentication.addAuthentication(registerEmail, registerPassword1)
                     spEditor.putString(registerEmail, registerPassword1)
                     spEditor.apply()
-                    println("1")
                     fireAuth.createUserWithEmailAndPassword(registerEmail, registerPassword1)
                         .addOnCompleteListener(this) { task ->
                             if (task.isSuccessful) {
-                                println("2")
                                 // Sign in success, update UI with the signed-in user's information
+                                println("Email Registered to DB")
                                 Log.d(TAG, "createUserWithEmail:success")
                                 Toast.makeText(this@RegistrationActivity, "Email Registered to DB", Toast.LENGTH_SHORT).show()
                                 val user = fireAuth.currentUser
                                 updateUI(user)
                             } else {
-                                println("3")
                                 // If sign in fails, display a message to the user.
+                                println("Authentication failed.")
                                 Log.w(TAG, "createUserWithEmail:failure", task.exception)
                                 Toast.makeText(this@RegistrationActivity, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show()
                                 updateUI(null)
                             }
                         }
+                    writeNewUser(registerEmail, registerName)
                     val intent = Intent(this, MainActivity::class.java)
                     intent.putExtra("authentication", authentication)
                     startActivity(intent)
@@ -114,5 +122,20 @@ class RegistrationActivity : AppCompatActivity() {
     }
 
     private fun updateUI(user: FirebaseUser?) {
+    }
+
+    private fun writeNewUser(email: String, name: String) {
+        Thread.sleep(2000)
+
+        var userId = Firebase.auth.currentUser!!.uid
+        val user = Profile(userId, email, name)
+
+        dbRef = FirebaseDatabase.getInstance().getReference("users")
+        dbRef.child(userId).setValue(user)
+            .addOnCompleteListener{
+                println("write to DB Success")
+            }.addOnFailureListener{ err ->
+                println("write to DB Fail: $err")
+            }
     }
 }

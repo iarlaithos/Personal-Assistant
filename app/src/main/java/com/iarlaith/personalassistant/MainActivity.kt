@@ -1,18 +1,26 @@
 package com.iarlaith.personalassistant
 
 import android.annotation.SuppressLint
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var fireAuth: FirebaseAuth
     private var isValid = false
     private var counter = 3
     //lateinit var authentication: Authentication
@@ -22,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val username = findViewById<EditText>(R.id.etUsername)
+        val email = findViewById<EditText>(R.id.etEmail)
         val password = findViewById<EditText>(R.id.etPassword)
         val loginButton = findViewById<Button>(R.id.btnLogin)
         val attempts = findViewById<TextView>(R.id.tvAttemps)
@@ -32,10 +40,10 @@ class MainActivity : AppCompatActivity() {
         val sharedPreferences = getSharedPreferences("AuthenticationDB", Context.MODE_PRIVATE)
         val spEditor = sharedPreferences.edit()
 
+        fireAuth = Firebase.auth
         var authentication =  Authentication()
 
         if(sharedPreferences != null){
-
             val spMap: Map<String, *> = sharedPreferences.all
 
             if(spMap.isNotEmpty()){
@@ -44,36 +52,33 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            val persistedUsername = sharedPreferences.getString("MostRecentUsername", "")
+            val persistedEmail = sharedPreferences.getString("MostRecentEmail", "")
             val persistedPassword = sharedPreferences.getString("MostRecentPassword", "")
 
-            if (authentication != null) {
-                authentication.addAuthentication(persistedUsername, persistedPassword)
-            }
+            authentication.addAuthentication(persistedEmail, persistedPassword)
+
             intent.putExtra("authentication", authentication)
 
             if(sharedPreferences.getBoolean("RememberMeCB", false)){
-                username.setText(persistedUsername)
+                email.setText(persistedEmail)
                 password.setText(persistedPassword)
                 rememberMeCB.isChecked = true
             }
         }
 
         loginButton.setOnClickListener {
-            val inputUsername = username.text.toString()
+            val inputEmail = email.text.toString()
             val inputPassword = password.text.toString()
 
-            if (inputUsername.isEmpty() || inputPassword.isEmpty()){
-                Toast.makeText(this@MainActivity, "Please enter both Username & Password", Toast.LENGTH_SHORT).show()
+            if (inputEmail.isEmpty() || inputPassword.isEmpty()){
+                Toast.makeText(this@MainActivity, "Please enter both Email & Password", Toast.LENGTH_SHORT).show()
             }
             else{
-                if (authentication != null) {
-                    isValid = authentication.verifyAuthentication(inputUsername, inputPassword)
-                }
-
+                isValid = authentication.verifyAuthentication(inputEmail, inputPassword) || checkUserFromDB(inputEmail, inputPassword)
+                println(isValid)
                 if(!isValid){
                     counter--
-                    Toast.makeText(this@MainActivity, "Incorrect Username or Password", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MainActivity, "Incorrect Email or Password", Toast.LENGTH_SHORT).show()
 
                     attempts.text = "Attempts Remaining: " + counter
 
@@ -83,9 +88,8 @@ class MainActivity : AppCompatActivity() {
                 }
                 else{
                     Toast.makeText(this@MainActivity, "Logged in", Toast.LENGTH_SHORT).show()
-
                     spEditor.putBoolean("RememberMeCB", rememberMeCB.isChecked)
-                    spEditor.putString("MostRecentUsername", inputUsername)
+                    spEditor.putString("MostRecentEmail", inputEmail)
                     spEditor.putString("MostRecentPassword", inputPassword)
                     spEditor.apply()
 
@@ -101,11 +105,30 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun validate(userName: String, userPassword: String): Boolean {
-        val auth = intent.getSerializableExtra("authentication") as? Authentication
-        if (auth != null) {
-            return auth.verifyAuthentication(userName, userPassword)
+    private fun checkUserFromDB(email: String, userPassword: String): Boolean {
+        fireAuth = Firebase.auth
+
+        fireAuth.signInWithEmailAndPassword(email, userPassword).addOnCompleteListener(this) { task ->
+            if (task.isSuccessful) {
+                // Sign in success, update UI with the signed-in user's information
+                Log.d(TAG, "signInWithEmail:success")
+                val user = fireAuth.currentUser
+                updateUI(user)
+            } else {
+                // If sign in fails, display a message to the user.
+                Log.w(TAG, "signInWithEmail:failure", task.exception)
+                Toast.makeText(baseContext, "Authentication failed.",
+                    Toast.LENGTH_SHORT).show()
+                updateUI(null)
+            }
+        }
+
+        if(fireAuth.currentUser != null){
+            return true
         }
         return false
+    }
+
+    private fun updateUI(user: FirebaseUser?) {
     }
 }
