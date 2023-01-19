@@ -6,12 +6,12 @@ plugins {
 
 android {
     namespace 'com.iarlaith.personalassistant'
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.iarlaith.personalassistant"
         minSdk 21
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -43,9 +43,14 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
     implementation 'com.google.firebase:firebase-database:20.1.0'
+    implementation 'com.google.firebase:firebase-database-ktx'
+    implementation 'com.google.firebase:firebase-database'
     implementation 'com.google.firebase:firebase-auth:21.1.0'
     implementation platform('com.google.firebase:firebase-bom:31.1.1')
     implementation 'com.google.firebase:firebase-auth-ktx'
+    implementation "androidx.activity:activity:1.7.0-alpha03"
+    implementation 'com.google.firebase:firebase-database-ktx:20.1.0'
+    implementation 'com.google.firebase:firebase-database-ktx:20.0.4'
 }
 
 apply plugin: 'com.google.gms.google-services'
