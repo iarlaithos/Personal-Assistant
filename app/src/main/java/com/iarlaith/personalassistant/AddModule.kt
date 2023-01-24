@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.app.TimePickerDialog
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -13,6 +14,10 @@ import android.widget.EditText
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.ktx.Firebase
 import com.iarlaith.personalassistant.ModuleSession.Day
 import com.iarlaith.personalassistant.ModuleSession.Type
 import java.sql.Time
@@ -20,6 +25,9 @@ import java.time.LocalTime
 import java.util.Calendar
 
 class AddModule : AppCompatActivity() {
+
+    private lateinit var dbRef: DatabaseReference
+
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,7 +37,7 @@ class AddModule : AppCompatActivity() {
         val sharedPreferences = getSharedPreferences("ModulesDB", Context.MODE_PRIVATE)
         val spEditor = sharedPreferences.edit()
 
-        val etEnterModName = findViewById<EditText>(R.id.etEnterModName)
+        val enterModName = findViewById<EditText>(R.id.etEnterModName)
         val colourEnumSpinner = findViewById<Spinner>(R.id.colourSpinner)
         val colourEnumArray = Module.ColourEnum.values()
         val colourEnumNames = colourEnumArray.map { it.name }
@@ -38,6 +46,8 @@ class AddModule : AppCompatActivity() {
         colourEnumSpinner.adapter = adapter
         val addSessionButton = findViewById<Button>(R.id.btnAddSession)
         val addedSessions = findViewById<TextView>(R.id.tvModuleSessions)
+        val addModuleButton = findViewById<Button>(R.id.btnAddModule)
+        var moduleSessionList : MutableList<ModuleSession> = mutableListOf()
 
         addSessionButton.setOnClickListener{
             val dialog = Dialog(this)
@@ -91,6 +101,7 @@ class AddModule : AppCompatActivity() {
                 val inputType = typeEnumSpinner.selectedItem.toString()
                 val inputDay = dayEnumSpinner.selectedItem.toString()
                 val moduleSession = ModuleSession(inputLocation, inputType, inputDay, inputStartTime, inputEndTime)
+                moduleSessionList.add(moduleSession)
                 addedSessions.append(moduleSession.location.toString() + ", " +
                         moduleSession.sessionType.toString() + ", " +
                         moduleSession.dayOfTheWeek.toString() + ", " +
@@ -102,5 +113,26 @@ class AddModule : AppCompatActivity() {
             }
             dialog.show()
         }
+
+        addModuleButton.setOnClickListener{
+            val module = Module(enterModName.text.toString(), colourEnumSpinner.selectedItem.toString(), moduleSessionList)
+            writeNewModule(module)
+            val intent = Intent(this, ModulesMenu::class.java)
+            startActivity(intent)
+        }
+    }
+
+    private fun writeNewModule(module: Module) {
+        Thread.sleep(2000)
+
+        var userId = Firebase.auth.currentUser!!.uid
+
+        dbRef = FirebaseDatabase.getInstance().getReference("Modules")
+        dbRef.child(userId).setValue(module)
+            .addOnCompleteListener{
+                println("write to DB Success")
+            }.addOnFailureListener{ err ->
+                println("write to DB Fail: $err")
+            }
     }
 }

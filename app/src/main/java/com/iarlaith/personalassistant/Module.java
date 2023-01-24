@@ -1,26 +1,32 @@
 package com.iarlaith.personalassistant;
 
-import java.util.Set;
+import java.util.List;
 
 public class Module {
 
     enum ColourEnum {
-        RED,
-        ORANGE,
-        YELLOW,
-        GREEN,
-        BLUE,
-        PURPLE,
-        PINK,
-        LIME,
-        WHITE
+        RED("RED"),
+        ORANGE("ORANGE"),
+        YELLOW("YELLOW"),
+        GREEN("GREEN"),
+        BLUE("BLUE"),
+        PURPLE("PURPLE"),
+        PINK("PINK"),
+        LIME("LIME"),
+        WHITE("WHITE");
+
+        public final String colour;
+
+        ColourEnum(String colour){
+            this.colour = colour;
+        }
     }
 
     public String name;
-    public ColourEnum colour;
-    public Set<ModuleSession> moduleSessions;
+    public String colour;
+    public List<ModuleSession> moduleSessions;
 
-    public Module(String name, ColourEnum colour, Set<ModuleSession> moduleSessions) {
+    public Module(String name, String colour, List<ModuleSession> moduleSessions) {
         this.name = name;
         this.colour = colour;
         this.moduleSessions = moduleSessions;
@@ -34,19 +40,19 @@ public class Module {
         this.name = name;
     }
 
-    public ColourEnum getColour() {
+    public String getColour() {
         return colour;
     }
 
-    public void setColour(ColourEnum colour) {
+    public void setColour(String colour) {
         this.colour = colour;
     }
 
-    public Set<ModuleSession> getModuleSessions() {
+    public List<ModuleSession> getModuleSessions() {
         return moduleSessions;
     }
 
-    public void setModuleSessions(Set<ModuleSession> moduleSessions) {
+    public void setModuleSessions(List<ModuleSession> moduleSessions) {
         this.moduleSessions = moduleSessions;
     }
 }
