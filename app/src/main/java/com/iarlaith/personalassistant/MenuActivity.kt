@@ -17,6 +17,7 @@ class MenuActivity : AppCompatActivity() {
 
         val signOut = findViewById<TextView>(R.id.tvSignOut)
         val homeButton = findViewById<ImageView>(R.id.MbtnHome)
+        val modulesButton = findViewById<TextView>(R.id.tvModules)
 
         signOut.setOnClickListener {
             Firebase.auth.signOut()
@@ -33,6 +34,11 @@ class MenuActivity : AppCompatActivity() {
                 }
             val alert = builder.create()
             alert.show()
+        }
+
+        modulesButton.setOnClickListener {
+            val intent = Intent(this, ModulesMenu::class.java)
+            startActivity(intent)
         }
 
         homeButton.setOnClickListener {
