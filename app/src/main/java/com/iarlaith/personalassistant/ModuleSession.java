@@ -1,8 +1,9 @@
 package com.iarlaith.personalassistant;
 
+import java.io.Serializable;
 import java.time.LocalTime;
 
-public class ModuleSession {
+public class ModuleSession implements Serializable {
 
     enum Type {
         LECTURE("LECTURE"),
@@ -88,5 +89,16 @@ public class ModuleSession {
 
     public void setEndTime(LocalTime endTime) {
         this.endTime = endTime;
+    }
+
+    @Override
+    public String toString() {
+        return "ModuleSession{" +
+                "location='" + location + '\'' +
+                ", sessionType='" + sessionType + '\'' +
+                ", dayOfTheWeek='" + dayOfTheWeek + '\'' +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                '}';
     }
 }

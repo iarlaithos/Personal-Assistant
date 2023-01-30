@@ -3,26 +3,21 @@ package com.iarlaith.personalassistant
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.app.TimePickerDialog
-import android.content.Context
+import android.content.ContentValues
 import android.content.Intent
+import android.database.sqlite.SQLiteDatabase
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Spinner
-import android.widget.TextView
+import android.widget.*
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
-import com.iarlaith.personalassistant.ModuleSession.Day
-import com.iarlaith.personalassistant.ModuleSession.Type
-import java.sql.Time
 import java.time.LocalTime
-import java.util.Calendar
+import java.util.*
+
 
 class AddModule : AppCompatActivity() {
 
@@ -33,9 +28,6 @@ class AddModule : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_module)
-
-        val sharedPreferences = getSharedPreferences("ModulesDB", Context.MODE_PRIVATE)
-        val spEditor = sharedPreferences.edit()
 
         val enterModName = findViewById<EditText>(R.id.etEnterModName)
         val colourEnumSpinner = findViewById<Spinner>(R.id.colourSpinner)
@@ -116,23 +108,75 @@ class AddModule : AppCompatActivity() {
 
         addModuleButton.setOnClickListener{
             val module = Module(enterModName.text.toString(), colourEnumSpinner.selectedItem.toString(), moduleSessionList)
-            writeNewModule(module)
+            var userId = Firebase.auth.currentUser!!.uid
+            writeNewModuleToDB(userId, module)
+            writeNewModuleToSP(module)
             val intent = Intent(this, ModulesMenu::class.java)
             startActivity(intent)
         }
     }
 
-    private fun writeNewModule(module: Module) {
+    private fun writeNewModuleToDB(userId: String, module: Module) {
         Thread.sleep(2000)
 
-        var userId = Firebase.auth.currentUser!!.uid
-
         dbRef = FirebaseDatabase.getInstance().getReference("Modules")
-        dbRef.child(userId).setValue(module)
+        dbRef.child(userId).push().setValue(module)
             .addOnCompleteListener{
                 println("write to DB Success")
             }.addOnFailureListener{ err ->
                 println("write to DB Fail: $err")
             }
+    }
+
+    @SuppressLint("Range")
+    private fun writeNewModuleToSP(module: Module) {
+        //write module
+        val database: SQLiteDatabase = ModuleSQLiteDBHelper(this).writableDatabase
+        val values = ContentValues()
+        values.put(
+            ModuleSQLiteDBHelper.MODULE_COLUMN_NAME,
+            module.name.toString()
+        )
+        values.put(
+            ModuleSQLiteDBHelper.MODULE_COLUMN_COLOUR,
+            module.colour.toString()
+        )
+
+
+        val newRowId = database.insert(ModuleSQLiteDBHelper.MODULES_TABLE, null, values)
+        Toast.makeText(this, "The new Module Row Id is $newRowId", Toast.LENGTH_LONG).show()
+
+        //write module sessions
+        for(session in module.moduleSessions) {
+            println(session.toString())
+            val sessionValues = ContentValues()
+            sessionValues.put(
+                ModuleSQLiteDBHelper.MODULE_COLUMN_ID,
+                newRowId
+            )
+            sessionValues.put(
+                ModuleSQLiteDBHelper.SESSION_COLUMN_LOCATION,
+                session.location.toString()
+            )
+            sessionValues.put(
+                ModuleSQLiteDBHelper.SESSION_COLUMN_TYPE,
+                session.sessionType.toString()
+            )
+            sessionValues.put(
+                ModuleSQLiteDBHelper.SESSION_COLUMN_DAY,
+                session.dayOfTheWeek.toString()
+            )
+            sessionValues.put(
+                ModuleSQLiteDBHelper.SESSION_COLUMN_START_TIME,
+                session.startTime.toString()
+            )
+            sessionValues.put(
+                ModuleSQLiteDBHelper.SESSION_COLUMN_END_TIME,
+                session.endTime.toString()
+            )
+            val newSessionRowId = database.insert(ModuleSQLiteDBHelper.MODULE_SESSIONS_TABLE, null, sessionValues)
+            Toast.makeText(this, "The new Row Id is $newSessionRowId", Toast.LENGTH_LONG).show()
+        }
+
     }
 }

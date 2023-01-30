@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this@MainActivity, "Please enter both Email & Password", Toast.LENGTH_SHORT).show()
             }
             else{
-                isValid = authentication.verifyAuthentication(inputEmail, inputPassword) || checkUserFromDB(inputEmail, inputPassword)
+                isValid = checkUserFromDB(inputEmail, inputPassword) || authentication.verifyAuthentication(inputEmail, inputPassword)
                 println(isValid)
                 if(!isValid){
                     counter--

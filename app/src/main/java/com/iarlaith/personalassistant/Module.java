@@ -1,8 +1,9 @@
 package com.iarlaith.personalassistant;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Module {
+public class Module implements Serializable {
 
     enum ColourEnum {
         RED("RED"),
@@ -54,5 +55,14 @@ public class Module {
 
     public void setModuleSessions(List<ModuleSession> moduleSessions) {
         this.moduleSessions = moduleSessions;
+    }
+
+    @Override
+    public String toString() {
+        return "Module{" +
+                "name='" + name + '\'' +
+                ", colour='" + colour + '\'' +
+                ", moduleSessions=" + moduleSessions +
+                '}';
     }
 }
