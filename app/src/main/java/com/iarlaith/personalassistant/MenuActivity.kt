@@ -1,14 +1,15 @@
 package com.iarlaith.personalassistant
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.iarlaith.personalassistant.ModuleSQLiteDBHelper.MODULES_TABLE
 
 class MenuActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,6 +35,13 @@ class MenuActivity : AppCompatActivity() {
                 }
             val alert = builder.create()
             alert.show()
+
+            val db: SQLiteDatabase = ModuleSQLiteDBHelper(this).writableDatabase
+            db.delete(MODULES_TABLE,null,null);
+            db.execSQL("delete from "+ MODULES_TABLE);
+            db.delete(ModuleSQLiteDBHelper.MODULE_SESSIONS_TABLE,null,null);
+            db.execSQL("delete from "+ ModuleSQLiteDBHelper.MODULE_SESSIONS_TABLE);
+            db.close()
         }
 
         modulesButton.setOnClickListener {

@@ -48,4 +48,9 @@ public class ModuleSQLiteDBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + MODULE_SESSIONS_TABLE + ";");
         onCreate(sqLiteDatabase);
     }
+
+    public void deleteAll(SQLiteDatabase sqLiteDatabase) {
+        sqLiteDatabase.execSQL("delete from "+ MODULES_TABLE);
+        sqLiteDatabase.execSQL("delete from "+ MODULE_SESSIONS_TABLE);
+    }
 }
