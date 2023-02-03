@@ -3,18 +3,27 @@ package com.iarlaith.personalassistant
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
+import android.database.Cursor
+import android.database.sqlite.SQLiteDatabase
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.ImageButton
+import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.iarlaith.personalassistant.ModuleSQLiteDBHelper.MODULES_TABLE
+import com.iarlaith.personalassistant.ModuleSQLiteDBHelper.MODULE_SESSIONS_TABLE
+import java.time.LocalTime
 
 class MenuActivity : AppCompatActivity() {
     private lateinit var database: DatabaseReference
@@ -48,6 +57,10 @@ class MenuActivity : AppCompatActivity() {
                         correctFirebaseDB()
                         Firebase.auth.signOut()
                     }
+                    val sharedPreferences = getSharedPreferences("AuthenticationDB", Context.MODE_PRIVATE)
+                    val spEditor = sharedPreferences.edit()
+                    spEditor.putBoolean("RememberMeCB", false)
+                    spEditor.apply()
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
                 }
