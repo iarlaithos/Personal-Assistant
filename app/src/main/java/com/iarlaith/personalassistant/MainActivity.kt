@@ -64,6 +64,11 @@ class MainActivity : AppCompatActivity() {
                 password.setText(persistedPassword)
                 rememberMeCB.isChecked = true
             }
+
+            if(checkUserFromDB(persistedEmail.toString(), persistedPassword.toString()) && rememberMeCB.isChecked){
+                val intent = Intent(this, HomePageActivity::class.java)
+                startActivity(intent)
+            }
         }
 
         loginButton.setOnClickListener {

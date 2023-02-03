@@ -3,28 +3,18 @@ package com.iarlaith.personalassistant
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
-import android.database.Cursor
-import android.database.sqlite.SQLiteDatabase
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
-import android.os.Build
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.iarlaith.personalassistant.ModuleSQLiteDBHelper.MODULES_TABLE
-import com.iarlaith.personalassistant.ModuleSQLiteDBHelper.MODULE_SESSIONS_TABLE
-import java.time.LocalTime
-
 
 class MenuActivity : AppCompatActivity() {
     private lateinit var database: DatabaseReference
@@ -68,6 +58,12 @@ class MenuActivity : AppCompatActivity() {
             val alert = builder.create()
             alert.show()
 
+            val db: SQLiteDatabase = ModuleSQLiteDBHelper(this).writableDatabase
+            db.delete(MODULES_TABLE,null,null);
+            db.execSQL("delete from "+ MODULES_TABLE);
+            db.delete(ModuleSQLiteDBHelper.MODULE_SESSIONS_TABLE,null,null);
+            db.execSQL("delete from "+ ModuleSQLiteDBHelper.MODULE_SESSIONS_TABLE);
+            db.close()
         }
 
         modulesButton.setOnClickListener {
