@@ -108,9 +108,12 @@ class AddModule : AppCompatActivity() {
 
         addModuleButton.setOnClickListener{
             val module = Module(enterModName.text.toString(), colourEnumSpinner.selectedItem.toString(), moduleSessionList)
-            var userId = Firebase.auth.currentUser!!.uid
-            writeNewModuleToDB(userId, module)
-            writeNewModuleToSP(module)
+            val currentUser = Firebase.auth.currentUser!!
+            if(currentUser != null){
+                val userId = currentUser.uid
+                writeNewModuleToDB(userId, module)
+            }
+            writeNewModuleToSQLite(module)
             val intent = Intent(this, ModulesMenu::class.java)
             startActivity(intent)
         }
@@ -129,7 +132,7 @@ class AddModule : AppCompatActivity() {
     }
 
     @SuppressLint("Range")
-    private fun writeNewModuleToSP(module: Module) {
+    private fun writeNewModuleToSQLite(module: Module) {
         //write module
         val database: SQLiteDatabase = ModuleSQLiteDBHelper(this).writableDatabase
         val values = ContentValues()

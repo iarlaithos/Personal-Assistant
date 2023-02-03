@@ -1,8 +1,10 @@
 package com.iarlaith.personalassistant
 
+import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
+import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -58,6 +60,7 @@ class RegistrationActivity : AppCompatActivity() {
                 if(authentication.checkEmail(registerEmail)){
                     Toast.makeText(this@RegistrationActivity, "email not available", Toast.LENGTH_SHORT).show()
                 } else{
+                    writeNewUserToSQLite(registerEmail,registerName)
                     authentication.addAuthentication(registerEmail, registerPassword1)
                     spEditor.putString(registerEmail, registerPassword1)
                     spEditor.apply()
@@ -70,6 +73,7 @@ class RegistrationActivity : AppCompatActivity() {
                                 Toast.makeText(this@RegistrationActivity, "Email Registered to DB", Toast.LENGTH_SHORT).show()
                                 val user = fireAuth.currentUser
                                 updateUI(user)
+                                writeNewUser(registerEmail, registerName)
                             } else {
                                 // If sign in fails, display a message to the user.
                                 println("Authentication failed.")
@@ -79,7 +83,6 @@ class RegistrationActivity : AppCompatActivity() {
                                 updateUI(null)
                             }
                         }
-                    writeNewUser(registerEmail, registerName)
                     val intent = Intent(this, MainActivity::class.java)
                     intent.putExtra("authentication", authentication)
                     startActivity(intent)
@@ -137,5 +140,21 @@ class RegistrationActivity : AppCompatActivity() {
             }.addOnFailureListener{ err ->
                 println("write to DB Fail: $err")
             }
+    }
+
+    private fun writeNewUserToSQLite(email: String, name: String) {
+        //write module
+        val database: SQLiteDatabase = UserSQLiteDBHelper(this).writableDatabase
+        val values = ContentValues()
+        values.put(
+            UserSQLiteDBHelper.USER_COLUMN_NAME,
+            name.toString()
+        )
+        values.put(
+            UserSQLiteDBHelper.USER_COLUMN_EMAIL,
+            email.toString()
+        )
+
+        val newRowId = database.insert(UserSQLiteDBHelper.USER_TABLE, null, values)
     }
 }

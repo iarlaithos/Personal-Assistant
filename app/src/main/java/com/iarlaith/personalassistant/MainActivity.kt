@@ -75,7 +75,8 @@ class MainActivity : AppCompatActivity() {
             }
             else{
                 isValid = checkUserFromDB(inputEmail, inputPassword) || authentication.verifyAuthentication(inputEmail, inputPassword)
-                println(isValid)
+                println(checkUserFromDB(inputEmail, inputPassword))
+                println(authentication.verifyAuthentication(inputEmail, inputPassword))
                 if(!isValid){
                     counter--
                     Toast.makeText(this@MainActivity, "Incorrect Email or Password", Toast.LENGTH_SHORT).show()

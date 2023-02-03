@@ -21,13 +21,5 @@ class ModulesMenu : AppCompatActivity() {
             val intent = Intent(this, AddModule::class.java)
             startActivity(intent)
         }
-
-        viewModule.setOnClickListener{
-            val getSharedPreferences = getSharedPreferences("ModulesDB", Context.MODE_PRIVATE)
-            val gson = Gson()
-            val json = getSharedPreferences.getString("Module", "")
-            val module: List<Module> = gson.fromJson(json, List::class.java) as List<Module>
-            println(module.toString())
-        }
     }
 }
