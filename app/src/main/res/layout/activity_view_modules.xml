@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ViewModulesActivity">
+
+    <Switch
+        android:id="@+id/vmSwitchMode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="College Mode"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.153" />
+
+    <ImageButton
+        android:id="@+id/vmbtnMenu"
+        android:layout_width="66dp"
+        android:layout_height="59dp"
+        android:background="#00000000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.954"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.026"
+        app:srcCompat="@drawable/menu" />
+
+    <ImageButton
+        android:id="@+id/vmbtnHome"
+        android:layout_width="78dp"
+        android:layout_height="67dp"
+        android:background="#00000000"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/home" />
+
+    <TextView
+        android:id="@+id/tvDay"
+        android:layout_width="wrap_content"
+        android:layout_height="33dp"
+        android:text="Day "
+        android:textSize="24sp"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/vmSwitchMode"
+        app:layout_constraintVertical_bias="0.067" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recModules"
+        android:layout_width="308dp"
+        android:layout_height="358dp"
+        android:layout_marginBottom="108dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvDay" />
+
+    <ImageButton
+        android:id="@+id/btnPrevDay"
+        android:layout_width="38dp"
+        android:layout_height="33dp"
+        android:background="#00000000"
+        app:layout_constraintBottom_toTopOf="@+id/recModules"
+        app:layout_constraintEnd_toStartOf="@+id/tvDay"
+        app:layout_constraintHorizontal_bias="0.875"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/vmSwitchMode"
+        app:layout_constraintVertical_bias="0.567"
+        app:srcCompat="@drawable/arrowleft" />
+
+    <ImageButton
+        android:id="@+id/btnNextDay"
+        android:layout_width="38dp"
+        android:layout_height="33dp"
+        android:background="#00000000"
+        app:layout_constraintBottom_toTopOf="@+id/recModules"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.117"
+        app:layout_constraintStart_toEndOf="@+id/tvDay"
+        app:layout_constraintTop_toBottomOf="@+id/vmSwitchMode"
+        app:layout_constraintVertical_bias="0.567"
+        app:srcCompat="@drawable/arrowright" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

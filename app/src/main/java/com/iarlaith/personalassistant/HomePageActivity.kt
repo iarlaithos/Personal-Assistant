@@ -20,9 +20,6 @@ class HomePageActivity : AppCompatActivity() {
         fireAuth = Firebase.auth
 
         menu.setOnClickListener {
-            println("######")
-            println(fireAuth.currentUser?.uid)
-            println("######")
             val intent = Intent(this, MenuActivity::class.java)
             startActivity(intent)
         }

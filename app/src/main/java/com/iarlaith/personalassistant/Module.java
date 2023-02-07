@@ -13,7 +13,6 @@ public class Module implements Serializable {
         BLUE("BLUE"),
         PURPLE("PURPLE"),
         PINK("PINK"),
-        LIME("LIME"),
         WHITE("WHITE");
 
         public final String colour;

@@ -1,12 +1,10 @@
 package com.iarlaith.personalassistant
 
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.google.gson.Gson
 
 
 class ModulesMenu : AppCompatActivity() {
@@ -14,11 +12,29 @@ class ModulesMenu : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_modules_menu)
 
+        val homeButton = findViewById<ImageButton>(R.id.vmbtnHome)
+        val menuButton = findViewById<ImageButton>(R.id.vmbtnMenu)
         val addModule = findViewById<TextView>(R.id.tvAddModule)
-        val viewModule = findViewById<TextView>(R.id.tvViewModules)
+        val viewModules = findViewById<TextView>(R.id.tvViewModules)
+
 
         addModule.setOnClickListener {
             val intent = Intent(this, AddModule::class.java)
+            startActivity(intent)
+        }
+
+        homeButton.setOnClickListener {
+            val intent = Intent(this, HomePageActivity::class.java)
+            startActivity(intent)
+        }
+
+        menuButton.setOnClickListener {
+            val intent = Intent(this, MenuActivity::class.java)
+            startActivity(intent)
+        }
+
+        viewModules.setOnClickListener {
+            val intent = Intent(this, ViewModulesActivity::class.java)
             startActivity(intent)
         }
     }

@@ -1,9 +1,11 @@
 package com.iarlaith.personalassistant
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -12,10 +14,11 @@ import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.ktx.database
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity() {
@@ -25,6 +28,7 @@ class MainActivity : AppCompatActivity() {
     private var counter = 3
     //lateinit var authentication: Authentication
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,31 +45,33 @@ class MainActivity : AppCompatActivity() {
         val spEditor = sharedPreferences.edit()
 
         fireAuth = Firebase.auth
-        var authentication =  Authentication()
+        val authentication = Authentication()
 
-        if(sharedPreferences != null){
+        if (sharedPreferences != null) {
             val spMap: Map<String, *> = sharedPreferences.all
 
-            if(spMap.isNotEmpty()){
-                if (authentication != null) {
-                    authentication.loadAuthenications(spMap)
-                }
+            if (spMap.isNotEmpty()) {
+                authentication.loadAuthenications(spMap)
             }
 
             val persistedEmail = sharedPreferences.getString("MostRecentEmail", "")
             val persistedPassword = sharedPreferences.getString("MostRecentPassword", "")
 
             authentication.addAuthentication(persistedEmail, persistedPassword)
-
             intent.putExtra("authentication", authentication)
 
-            if(sharedPreferences.getBoolean("RememberMeCB", false)){
+            if (sharedPreferences.getBoolean("RememberMeCB", false)) {
                 email.setText(persistedEmail)
                 password.setText(persistedPassword)
                 rememberMeCB.isChecked = true
             }
 
-            if(checkUserFromDB(persistedEmail.toString(), persistedPassword.toString()) && rememberMeCB.isChecked){
+            if (checkUserFromDB(
+                    persistedEmail.toString(),
+                    persistedPassword.toString()
+                ) && rememberMeCB.isChecked
+            ) {
+                correctSQLDB(this)
                 val intent = Intent(this, HomePageActivity::class.java)
                 startActivity(intent)
             }
@@ -75,30 +81,33 @@ class MainActivity : AppCompatActivity() {
             val inputEmail = email.text.toString()
             val inputPassword = password.text.toString()
 
-            if (inputEmail.isEmpty() || inputPassword.isEmpty()){
-                Toast.makeText(this@MainActivity, "Please enter both Email & Password", Toast.LENGTH_SHORT).show()
-            }
-            else{
-                isValid = checkUserFromDB(inputEmail, inputPassword) || authentication.verifyAuthentication(inputEmail, inputPassword)
-                println(checkUserFromDB(inputEmail, inputPassword))
-                println(authentication.verifyAuthentication(inputEmail, inputPassword))
-                if(!isValid){
+            if (inputEmail.isEmpty() || inputPassword.isEmpty()) {
+
+            } else {
+                isValid = checkUserFromDB(
+                    inputEmail,
+                    inputPassword
+                ) || authentication.verifyAuthentication(inputEmail, inputPassword)
+                if (!isValid) {
                     counter--
-                    Toast.makeText(this@MainActivity, "Incorrect Email or Password", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Incorrect Email or Password",
+                        Toast.LENGTH_SHORT
+                    ).show()
 
-                    attempts.text = "Attempts Remaining: " + counter
+                    attempts.text = "Attempts Remaining: $counter"
 
-                    if(counter == 0){
+                    if (counter == 0) {
                         loginButton.isEnabled = false
                     }
-                }
-                else{
+                } else {
                     Toast.makeText(this@MainActivity, "Logged in", Toast.LENGTH_SHORT).show()
                     spEditor.putBoolean("RememberMeCB", rememberMeCB.isChecked)
                     spEditor.putString("MostRecentEmail", inputEmail)
                     spEditor.putString("MostRecentPassword", inputPassword)
                     spEditor.apply()
-
+                    correctSQLDB(this)
                     val intent = Intent(this, HomePageActivity::class.java)
                     startActivity(intent)
                 }
@@ -114,27 +123,68 @@ class MainActivity : AppCompatActivity() {
     private fun checkUserFromDB(email: String, userPassword: String): Boolean {
         fireAuth = Firebase.auth
 
-        fireAuth.signInWithEmailAndPassword(email, userPassword).addOnCompleteListener(this) { task ->
-            if (task.isSuccessful) {
-                // Sign in success, update UI with the signed-in user's information
-                Log.d(TAG, "signInWithEmail:success")
-                val user = fireAuth.currentUser
-                updateUI(user)
-            } else {
-                // If sign in fails, display a message to the user.
-                Log.w(TAG, "signInWithEmail:failure", task.exception)
-                Toast.makeText(baseContext, "Authentication failed.",
-                    Toast.LENGTH_SHORT).show()
-                updateUI(null)
-            }
+        if (email.isEmpty() || userPassword.isEmpty()) {
+            return false
+        } else {
+            fireAuth.signInWithEmailAndPassword(email, userPassword)
+                .addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        // Sign in success, update UI with the signed-in user's information
+                        Log.d(TAG, "signInWithEmail:success")
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Log.w(TAG, "signInWithEmail:failure", task.exception)
+                    }
+                }
         }
-
-        if(fireAuth.currentUser != null){
+        if (fireAuth.currentUser != null) {
             return true
         }
         return false
     }
 
     private fun updateUI(user: FirebaseUser?) {
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun correctSQLDB(activity: Activity) {
+        val addModule = AddModule()
+        val menuActivityFunctions = MenuActivity()
+        //if(menuActivityFunctions.getLocalModuleData() != null) {
+        val userLocalModules = menuActivityFunctions.getLocalModuleData(this)
+        menuActivityFunctions.getFirebaseModuleData { userCloudModules ->
+            if (userCloudModules == null) {
+                Log.d(TAG, "User cloud modules is null")
+                return@getFirebaseModuleData
+            }
+            if (userLocalModules != null) {
+                if (userLocalModules.size != userCloudModules.size) {
+                    println("#############################")
+                    println("Not equal")
+                    println(userLocalModules)
+                    println(userCloudModules)
+                    println("#############################")
+                    val differenceModules = userCloudModules.minus(userLocalModules)
+                    for (diffModule in differenceModules) {
+                        addModule.writeNewModuleToSQLite(diffModule as Module, activity)
+                    }
+
+                } else {
+                    println("#############################")
+                    println("Equal")
+                    println(userLocalModules)
+                    println(userCloudModules)
+                    println("#############################")
+                }
+            } else {
+                menuActivityFunctions.getFirebaseModuleData { userCloudModules ->
+                    if (userCloudModules != null) {
+                        for (module in userCloudModules) {
+                            addModule.writeNewModuleToSQLite(module, this)
+                        }
+                    }
+                }
+            }
+        }
     }
 }

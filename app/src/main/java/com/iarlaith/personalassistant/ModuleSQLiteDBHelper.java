@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class ModuleSQLiteDBHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 2;
-    public static final String DATABASE_NAME = "personal_assistant_database";
+    public static final String DATABASE_NAME = "modules_database";
     public static final String MODULES_TABLE = "module";
     public static final String MODULE_COLUMN_ID = "module_id";
     public static final String MODULE_COLUMN_NAME = "module_name";
