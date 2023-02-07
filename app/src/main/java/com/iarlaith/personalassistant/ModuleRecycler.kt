@@ -18,6 +18,7 @@ class ModuleRecycler(private val modules: List<Module>) : RecyclerView.Adapter<M
         val arrow : ImageView = view.findViewById(R.id.smallArrow)
         val location : TextView = view.findViewById(R.id.tvRecLocation)
         val type : TextView = view.findViewById(R.id.tvRecType)
+        val timeArrow : ImageView = view.findViewById(R.id.timeArrow)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -31,9 +32,11 @@ class ModuleRecycler(private val modules: List<Module>) : RecyclerView.Adapter<M
         holder.endTime.text = modules[position].moduleSessions[0].endTime.toString()
         holder.location.text = modules[position].moduleSessions[0].location.toString()
         holder.type.text = modules[position].moduleSessions[0].sessionType.toString()
+
         holder.location.isVisible = false
         holder.type.isVisible = false
         holder.endTime.isVisible = false
+        holder.timeArrow.isVisible = false
         val colour = modules[position].colour
         when (colour) {
             "RED" -> {
@@ -224,11 +227,13 @@ class ModuleRecycler(private val modules: List<Module>) : RecyclerView.Adapter<M
                 holder.location.isVisible = true
                 holder.type.isVisible = true
                 holder.endTime.isVisible = true
+                holder.timeArrow.isVisible = true
             }else{
                 holder.arrow.rotation = 0F
                 holder.location.isVisible = false
                 holder.type.isVisible = false
                 holder.endTime.isVisible = false
+                holder.timeArrow.isVisible = false
             }
         }
     }

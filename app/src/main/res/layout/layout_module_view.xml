@@ -84,4 +84,18 @@
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/smallarrow" />
 
+    <ImageView
+        android:id="@+id/timeArrow"
+        android:layout_width="33dp"
+        android:layout_height="53dp"
+        android:rotation="180"
+        android:rotationX="0"
+        app:layout_constraintBottom_toTopOf="@+id/tvViewEndTime"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.281"
+        app:layout_constraintStart_toEndOf="@+id/tvRecLocation"
+        app:layout_constraintTop_toBottomOf="@+id/tvViewStartTime"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/longarrow" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
