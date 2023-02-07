@@ -3,14 +3,21 @@ package com.iarlaith.personalassistant
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 
 class ModuleRecycler(private val modules: List<Module>) : RecyclerView.Adapter<ModuleRecycler.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val module: TextView = view.findViewById(R.id.tvRecModule)
+        val startTime : TextView = view.findViewById(R.id.tvViewStartTime)
+        val endTime : TextView = view.findViewById(R.id.tvViewEndTime)
+        val arrow : ImageView = view.findViewById(R.id.smallArrow)
+        val location : TextView = view.findViewById(R.id.tvRecLocation)
+        val type : TextView = view.findViewById(R.id.tvRecType)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -20,62 +27,209 @@ class ModuleRecycler(private val modules: List<Module>) : RecyclerView.Adapter<M
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.module.text = modules[position].name
+        holder.startTime.text = modules[position].moduleSessions[0].startTime.toString()
+        holder.endTime.text = modules[position].moduleSessions[0].endTime.toString()
+        holder.location.text = modules[position].moduleSessions[0].location.toString()
+        holder.type.text = modules[position].moduleSessions[0].sessionType.toString()
+        holder.location.isVisible = false
+        holder.type.isVisible = false
+        holder.endTime.isVisible = false
         val colour = modules[position].colour
         when (colour) {
-            "RED" -> holder.module.setBackgroundColor(
+            "RED" -> {
+                holder.module.setBackgroundColor(
                 ContextCompat.getColor(
                     holder.module.context,
                     R.color.red
+                    )
                 )
-            )
-            "ORANGE" -> holder.module.setBackgroundColor(
-                ContextCompat.getColor(
-                    holder.module.context,
-                    R.color.orange
+                holder.location.setBackgroundColor(
+                    ContextCompat.getColor(
+                        holder.location.context,
+                        R.color.red
+                    )
                 )
-            )
-            "YELLOW" -> holder.module.setBackgroundColor(
-                ContextCompat.getColor(
-                    holder.module.context,
-                    R.color.yellow
+                holder.type.setBackgroundColor(
+                    ContextCompat.getColor(
+                        holder.type.context,
+                        R.color.red
+                    )
                 )
-            )
-            "GREEN" -> holder.module.setBackgroundColor(
-                ContextCompat.getColor(
-                    holder.module.context,
-                    R.color.green
+            }
+            "ORANGE" -> {
+                holder.module.setBackgroundColor(
+                    ContextCompat.getColor(
+                        holder.module.context,
+                        R.color.orange
+                    )
                 )
-            )
-            "BLUE" -> holder.module.setBackgroundColor(
-                ContextCompat.getColor(
-                    holder.module.context,
-                    R.color.blue
+                holder.location.setBackgroundColor(
+                    ContextCompat.getColor(
+                        holder.location.context,
+                        R.color.orange
+                    )
                 )
-            )
-            "PURPLE" -> holder.module.setBackgroundColor(
-                ContextCompat.getColor(
-                    holder.module.context,
-                    R.color.purple_500
+                holder.type.setBackgroundColor(
+                    ContextCompat.getColor(
+                        holder.type.context,
+                        R.color.orange
+                    )
                 )
-            )
-            "PINK" -> holder.module.setBackgroundColor(
-                ContextCompat.getColor(
-                    holder.module.context,
-                    R.color.pink
+            }
+            "YELLOW" ->{
+                holder.module.setBackgroundColor(
+                    ContextCompat.getColor(
+                        holder.module.context,
+                        R.color.yellow
+                    )
                 )
-            )
-            "WHITE" -> holder.module.setBackgroundColor(
-                ContextCompat.getColor(
-                    holder.module.context,
-                    R.color.white
+                holder.location.setBackgroundColor(
+                    ContextCompat.getColor(
+                        holder.location.context,
+                        R.color.yellow
+                    )
                 )
-            )
-            else -> holder.module.setBackgroundColor(
-                ContextCompat.getColor(
-                    holder.module.context,
-                    R.color.white
+                holder.type.setBackgroundColor(
+                    ContextCompat.getColor(
+                        holder.type.context,
+                        R.color.yellow
+                    )
                 )
-            )
+            }
+            "GREEN" -> {
+                holder.module.setBackgroundColor(
+                    ContextCompat.getColor(
+                        holder.module.context,
+                        R.color.green
+                    )
+                )
+                holder.location.setBackgroundColor(
+                    ContextCompat.getColor(
+                        holder.location.context,
+                        R.color.green
+                    )
+                )
+                holder.type.setBackgroundColor(
+                    ContextCompat.getColor(
+                        holder.type.context,
+                        R.color.green
+                    )
+                )
+            }
+            "BLUE" -> {
+                holder.module.setBackgroundColor(
+                    ContextCompat.getColor(
+                        holder.module.context,
+                        R.color.blue
+                    )
+                )
+                holder.location.setBackgroundColor(
+                    ContextCompat.getColor(
+                        holder.location.context,
+                        R.color.blue
+                    )
+                )
+                holder.type.setBackgroundColor(
+                    ContextCompat.getColor(
+                        holder.type.context,
+                        R.color.blue
+                    )
+                )
+            }
+            "PURPLE" -> {
+                holder.module.setBackgroundColor(
+                    ContextCompat.getColor(
+                        holder.module.context,
+                        R.color.purple_500
+                    )
+                )
+                holder.location.setBackgroundColor(
+                    ContextCompat.getColor(
+                        holder.location.context,
+                        R.color.purple_500
+                    )
+                )
+                holder.type.setBackgroundColor(
+                    ContextCompat.getColor(
+                        holder.type.context,
+                        R.color.purple_500
+                    )
+                )
+            }
+            "PINK" -> {
+                holder.module.setBackgroundColor(
+                    ContextCompat.getColor(
+                        holder.module.context,
+                        R.color.pink
+                    )
+                )
+                holder.location.setBackgroundColor(
+                    ContextCompat.getColor(
+                        holder.location.context,
+                        R.color.pink
+                    )
+                )
+                holder.type.setBackgroundColor(
+                    ContextCompat.getColor(
+                        holder.type.context,
+                        R.color.pink
+                    )
+                )
+            }
+            "WHITE" -> {
+                holder.module.setBackgroundColor(
+                    ContextCompat.getColor(
+                        holder.module.context,
+                        R.color.white
+                    )
+                )
+                holder.location.setBackgroundColor(
+                    ContextCompat.getColor(
+                        holder.location.context,
+                        R.color.white
+                    )
+                )
+                holder.type.setBackgroundColor(
+                    ContextCompat.getColor(
+                        holder.type.context,
+                        R.color.white
+                    )
+                )
+            }
+            else -> {
+                holder.module.setBackgroundColor(
+                    ContextCompat.getColor(
+                        holder.module.context,
+                        R.color.white
+                    )
+                )
+                holder.location.setBackgroundColor(
+                    ContextCompat.getColor(
+                        holder.location.context,
+                        R.color.white
+                    )
+                )
+                holder.type.setBackgroundColor(
+                    ContextCompat.getColor(
+                        holder.type.context,
+                        R.color.white
+                    )
+                )
+            }
+        }
+
+        holder.arrow.setOnClickListener {
+            if(holder.arrow.rotation == 0F){
+                holder.arrow.rotation = 90F
+                holder.location.isVisible = true
+                holder.type.isVisible = true
+                holder.endTime.isVisible = true
+            }else{
+                holder.arrow.rotation = 0F
+                holder.location.isVisible = false
+                holder.type.isVisible = false
+                holder.endTime.isVisible = false
+            }
         }
     }
 

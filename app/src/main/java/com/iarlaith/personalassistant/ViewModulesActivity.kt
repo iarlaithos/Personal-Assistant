@@ -12,6 +12,7 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.time.LocalDate
+import java.time.LocalTime
 
 class ViewModulesActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -68,12 +69,17 @@ class ViewModulesActivity : AppCompatActivity() {
         viewDay.text = day
         var moduleList : ArrayList<Module> =ArrayList()
         val database: SQLiteDatabase = ModuleSQLiteDBHelper(this).readableDatabase
-        val cursorModule = database.rawQuery("SELECT module_name, colour FROM module INNER JOIN module_sessions ON module.module_id = module_sessions.module_id WHERE module.module_id IN (SELECT module_id from module_sessions where day = '$day')", null)
+        val cursorModule = database.rawQuery("SELECT module_name, colour, location, type, start_time, end_time FROM module INNER JOIN module_sessions ON module.module_id = module_sessions.module_id WHERE module.module_id IN (SELECT module_id from module_sessions where day = '$day') ORDER BY module_sessions.start_time", null)
         if (cursorModule.moveToFirst()) {
             do {
                 var moduleName = cursorModule.getString(0)
                 var moduleColour = cursorModule.getString(1)
-                moduleList.add(Module(moduleName,moduleColour,null))
+                var location = cursorModule.getString(2)
+                var type = cursorModule.getString(3)
+                var startTime = cursorModule.getString(4)
+                var endTime = cursorModule.getString(5)
+
+                moduleList.add(Module(moduleName,moduleColour,listOf(ModuleSession(location, type, null, LocalTime.parse(startTime),LocalTime.parse(endTime)))))
             } while (cursorModule.moveToNext())
         }
         cursorModule.close()
