@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/etEditLocation"
+        android:layout_width="235dp"
+        android:layout_height="58dp"
+        android:hint="Enter  Location"
+        android:inputType="text"
+        android:maxLines="1"
+        android:singleLine="true" />
+
+    <Spinner
+        android:id="@+id/editTypeEnumSpinner"
+        android:layout_width="235dp"
+        android:layout_height="56dp" />
+
+    <Spinner
+        android:id="@+id/editDayEnumSpinner"
+        android:layout_width="235dp"
+        android:layout_height="56dp" />
+
+    <Button
+        android:id="@+id/btnEditStartTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select Start Time" />
+
+    <TextView
+        android:id="@+id/tvEditStartTime"
+        android:layout_width="184dp"
+        android:layout_height="39dp"
+        android:text="Start Time: "
+        android:textSize="20sp"
+        tools:text="Start Time: " />
+
+    <Button
+        android:id="@+id/btnEditEndTime"
+        android:layout_width="188dp"
+        android:layout_height="wrap_content"
+        android:text="Select End Time" />
+
+    <TextView
+        android:id="@+id/tvEditEndTime"
+        android:layout_width="187dp"
+        android:layout_height="39dp"
+        android:text="End Time: "
+        android:textSize="20sp"
+        tools:text="End Time: " />
+
+    <TableRow
+        android:id="@+id/buttonRow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp" >
+
+        <Button
+            android:id="@+id/btnConfirmSession"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Confirm Changes" />
+        <Button
+            android:id="@+id/btnDeleteSession"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Delete Session" />
+    </TableRow>
+
+</LinearLayout>

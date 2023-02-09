@@ -16,6 +16,7 @@ class ModulesMenu : AppCompatActivity() {
         val menuButton = findViewById<ImageButton>(R.id.vmbtnMenu)
         val addModule = findViewById<TextView>(R.id.tvAddModule)
         val viewModules = findViewById<TextView>(R.id.tvViewModules)
+        val editModules = findViewById<TextView>(R.id.tvEditModules)
 
 
         addModule.setOnClickListener {
@@ -35,6 +36,11 @@ class ModulesMenu : AppCompatActivity() {
 
         viewModules.setOnClickListener {
             val intent = Intent(this, ViewModulesActivity::class.java)
+            startActivity(intent)
+        }
+
+        editModules.setOnClickListener {
+            val intent = Intent(this, EditModuleActivity::class.java)
             startActivity(intent)
         }
     }

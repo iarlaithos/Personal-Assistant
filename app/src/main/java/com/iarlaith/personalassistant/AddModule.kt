@@ -30,16 +30,19 @@ class AddModule : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_module)
 
+        val homeButton = findViewById<ImageView>(R.id.addModulebtnHome)
+        val menuButton = findViewById<ImageView>(R.id.addModulebtnMenu)
+
         val enterModName = findViewById<EditText>(R.id.etEnterModName)
-        val colourEnumSpinner = findViewById<Spinner>(R.id.colourSpinner)
+        val colourEnumSpinner = findViewById<Spinner>(R.id.selectModuleSpinner)
         val colourEnumArray = Module.ColourEnum.values()
         val colourEnumNames = colourEnumArray.map { it.name }
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, colourEnumNames)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         colourEnumSpinner.adapter = adapter
         val addSessionButton = findViewById<Button>(R.id.btnAddSession)
-        val addedSessions = findViewById<TextView>(R.id.tvModuleSessions)
-        val addModuleButton = findViewById<Button>(R.id.btnAddModule)
+        val addedSessions = findViewById<TextView>(R.id.tvEditModuleSessions)
+        val addModuleButton = findViewById<Button>(R.id.btnConfirmEditModule)
         val moduleSessionList : MutableList<ModuleSession> = mutableListOf()
 
         addSessionButton.setOnClickListener{
@@ -117,9 +120,19 @@ class AddModule : AppCompatActivity() {
             val intent = Intent(this, ModulesMenu::class.java)
             startActivity(intent)
         }
+
+        homeButton.setOnClickListener {
+            val intent = Intent(this, HomePageActivity::class.java)
+            startActivity(intent)
+        }
+
+        menuButton.setOnClickListener {
+            val intent = Intent(this, MenuActivity::class.java)
+            startActivity(intent)
+        }
     }
 
-    private fun writeNewModuleToDB(userId: String, module: Module) {
+    fun writeNewModuleToDB(userId: String, module: Module) {
         Thread.sleep(2000)
 
         dbRef = FirebaseDatabase.getInstance().getReference("Modules")

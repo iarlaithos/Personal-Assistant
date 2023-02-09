@@ -159,22 +159,10 @@ class MainActivity : AppCompatActivity() {
             }
             if (userLocalModules != null) {
                 if (userLocalModules.size != userCloudModules.size) {
-                    println("#############################")
-                    println("Not equal")
-                    println(userLocalModules)
-                    println(userCloudModules)
-                    println("#############################")
                     val differenceModules = userCloudModules.minus(userLocalModules)
                     for (diffModule in differenceModules) {
                         addModule.writeNewModuleToSQLite(diffModule as Module, activity)
                     }
-
-                } else {
-                    println("#############################")
-                    println("Equal")
-                    println(userLocalModules)
-                    println(userCloudModules)
-                    println("#############################")
                 }
             } else {
                 menuActivityFunctions.getFirebaseModuleData { userCloudModules ->
