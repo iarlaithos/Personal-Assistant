@@ -47,7 +47,7 @@ class EditModuleActivity : AppCompatActivity() {
         }
         cursor.close()
 
-        val moduleSpinner = findViewById<Spinner>(R.id.selectModuleSpinner)
+        var moduleSpinner = findViewById<Spinner>(R.id.selectModuleSpinner)
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, moduleEnumArray)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         moduleSpinner.adapter = adapter
@@ -55,7 +55,7 @@ class EditModuleActivity : AppCompatActivity() {
         val moduleName = findViewById<EditText>(R.id.etEditModuleName)
         var moduleColour = findViewById<Spinner>(R.id.moduleColourSpinner)
         val recyclerView = findViewById<RecyclerView>(R.id.recSession)
-        var moduleSelected : String = moduleSpinner.selectedItem.toString()
+        var moduleSelected : String = if (moduleSpinner.selectedItem != null) moduleSpinner.selectedItem.toString() else "No Module Added"
         moduleName.isVisible = false
         moduleColour.isVisible = false
         recyclerView.isVisible = false

@@ -77,9 +77,8 @@ class MenuActivity : AppCompatActivity() {
 
             val db: SQLiteDatabase = ModuleSQLiteDBHelper(this).writableDatabase
             db.delete(MODULES_TABLE,null,null);
-            db.execSQL("delete from "+ MODULES_TABLE);
-            db.delete(ModuleSQLiteDBHelper.MODULE_SESSIONS_TABLE,null,null);
-            db.execSQL("delete from "+ ModuleSQLiteDBHelper.MODULE_SESSIONS_TABLE);
+            db.execSQL("delete from $MODULES_TABLE");
+            db.execSQL("delete from $MODULE_SESSIONS_TABLE");
             db.close()
         }
 
@@ -125,36 +124,38 @@ class MenuActivity : AppCompatActivity() {
                 Log.d(TAG, "User cloud modules is null")
                 return@getFirebaseModuleData
             }
-            if (userLocalModules.toString() != userCloudModules.toString()) {
-                println("#############################")
-                println("Not equal")
-                println(userLocalModules)
-                println(userCloudModules)
-                println("#############################")
-                val differenceModules = userLocalModules?.minus(userCloudModules)
-                if (differenceModules != null) {
-                    for (diffModule in differenceModules) {
-                        val userId = Firebase.auth.currentUser?.uid
-                        val reference = FirebaseDatabase.getInstance().getReference("Modules")
-                        if (userId != null) {
-                            reference.child(userId).push().setValue(diffModule)
-                                .addOnCompleteListener {
-                                    println("write to DB Success")
-                                }.addOnFailureListener { err ->
-                                    println("write to DB Fail: $err")
-                                }
-                        }else{
-                            println("UserId is null")
+            if (userLocalModules != null) {
+                if (userLocalModules.toString() != userCloudModules.toString() && userLocalModules.size >= userCloudModules.size) {
+                    println("#############################")
+                    println("Not equal")
+                    println(userLocalModules)
+                    println(userCloudModules)
+                    println("#############################")
+                    val differenceModules = userLocalModules?.minus(userCloudModules)
+                    if (differenceModules != null) {
+                        for (diffModule in differenceModules) {
+                            val userId = Firebase.auth.currentUser?.uid
+                            val reference = FirebaseDatabase.getInstance().getReference("Modules")
+                            if (userId != null) {
+                                reference.child(userId).push().setValue(diffModule)
+                                    .addOnCompleteListener {
+                                        println("write to DB Success")
+                                    }.addOnFailureListener { err ->
+                                        println("write to DB Fail: $err")
+                                    }
+                            }else{
+                                println("UserId is null")
+                            }
                         }
                     }
-                }
 
-            } else {
-                println("#############################")
-                println("Equal")
-                println(userLocalModules)
-                println(userCloudModules)
-                println("#############################")
+                } else {
+                    println("#############################")
+                    println("Equal")
+                    println(userLocalModules)
+                    println(userCloudModules)
+                    println("#############################")
+                }
             }
         }
     }
