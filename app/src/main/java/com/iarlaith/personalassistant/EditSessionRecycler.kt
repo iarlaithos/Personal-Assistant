@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.RequiresApi
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import java.time.*
 import java.util.*
@@ -93,12 +94,10 @@ class EditSessionRecycler(private var sessions: ArrayList<ModuleSession>, val co
             }
 
             val confirmSessionButton = dialog.findViewById<Button>(R.id.btnConfirmSession)
-
             confirmSessionButton.setOnClickListener{
                 val inputLocation = location.text.toString()
                 val inputType = typeEnumSpinner.selectedItem.toString()
                 val inputDay = dayEnumSpinner.selectedItem.toString()
-                //val moduleSession = ModuleSession(inputLocation, inputType, inputDay, inputStartTime, inputEndTime)
 
                 sessions[position].location = inputLocation
                 sessions[position].sessionType = inputType
@@ -106,6 +105,14 @@ class EditSessionRecycler(private var sessions: ArrayList<ModuleSession>, val co
                 holder.sessionView.text = sessions[position].location + ", " +  sessions[position].sessionType + "\n" + sessions[position].dayOfTheWeek + ", "  + sessions[position].startTime + "  ->  " + sessions[position].endTime
                 dialog.dismiss()
             }
+
+            val deleteSessionButton = dialog.findViewById<Button>(R.id.btnDeleteSession)
+            deleteSessionButton.setOnClickListener {
+                sessions.removeAt(position)
+                notifyDataSetChanged()
+                dialog.dismiss()
+            }
+
             dialog.show()
         }
     }

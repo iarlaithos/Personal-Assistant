@@ -12,6 +12,8 @@ import android.os.Bundle
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -41,9 +43,14 @@ class AddModule : AppCompatActivity() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         colourEnumSpinner.adapter = adapter
         val addSessionButton = findViewById<Button>(R.id.btnAddSession)
-        val addedSessions = findViewById<TextView>(R.id.tvEditModuleSessions)
-        val addModuleButton = findViewById<Button>(R.id.btnConfirmEditModule)
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerSessions)
+        var module : Module = Module(null,null,null)
         val moduleSessionList : MutableList<ModuleSession> = mutableListOf()
+        if(module.moduleSessions != null){
+            recyclerView.layoutManager = LinearLayoutManager(this@AddModule, LinearLayoutManager.VERTICAL, false)
+            recyclerView.adapter = EditSessionRecycler(module.moduleSessions as java.util.ArrayList<ModuleSession>, this)
+        }
+        val addModuleButton = findViewById<Button>(R.id.btnConfirmEditModule)
 
         addSessionButton.setOnClickListener{
             val dialog = Dialog(this)
@@ -98,13 +105,8 @@ class AddModule : AppCompatActivity() {
                 val inputDay = dayEnumSpinner.selectedItem.toString()
                 val moduleSession = ModuleSession(inputLocation, inputType, inputDay, inputStartTime, inputEndTime)
                 moduleSessionList.add(moduleSession)
-                addedSessions.append(moduleSession.location.toString() + ", " +
-                        moduleSession.sessionType.toString() + ", " +
-                        moduleSession.dayOfTheWeek.toString() + ", " +
-                        moduleSession.startTime.toString()  + ", " +
-                        moduleSession.endTime.toString() + System.lineSeparator()
-                )
-
+                recyclerView.layoutManager = LinearLayoutManager(this@AddModule, LinearLayoutManager.VERTICAL, false)
+                recyclerView.adapter = EditSessionRecycler(moduleSessionList as java.util.ArrayList<ModuleSession>, this@AddModule)
                 dialog.dismiss()
             }
             dialog.show()
