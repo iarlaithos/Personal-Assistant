@@ -72,6 +72,7 @@ class MainActivity : AppCompatActivity() {
                 ) && rememberMeCB.isChecked
             ) {
                 correctSQLDB(this)
+                correctSQLToDoDB(this)
                 val intent = Intent(this, HomePageActivity::class.java)
                 startActivity(intent)
             }
@@ -108,6 +109,7 @@ class MainActivity : AppCompatActivity() {
                     spEditor.putString("MostRecentPassword", inputPassword)
                     spEditor.apply()
                     correctSQLDB(this)
+                    correctSQLToDoDB(this)
                     val intent = Intent(this, HomePageActivity::class.java)
                     startActivity(intent)
                 }
@@ -174,5 +176,38 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun correctSQLToDoDB(activity: Activity) {
+        val correctToDos = CorrectToDos()
+        val toDoListActivity = ToDoListActivity()
+        val userLocalTodos = correctToDos.getLocalTodoData(this)
+
+        correctToDos.getFirebaseTodoData { userCloudTodos ->
+            if (userCloudTodos == null)
+            {
+                Log.d(TAG, "User cloud todos is null")
+                return@getFirebaseTodoData
+            }else{
+                if (userLocalTodos != null)
+                {
+                    if (userLocalTodos.toString() != userCloudTodos.toString() && userLocalTodos.size <= userCloudTodos.size)
+                    {
+                        val differenceTodos = userCloudTodos.minus(userLocalTodos)
+                        for (diffTodo in differenceTodos)
+                        {
+                            toDoListActivity.writetoSQLite(diffTodo, activity)
+                        }
+                    }
+                } else
+                {
+                    for (todo in userCloudTodos)
+                    {
+                        toDoListActivity.writetoSQLite(todo, activity)
+                    }
+                }
+            }
+        }// end of get
     }
 }

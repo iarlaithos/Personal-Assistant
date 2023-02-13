@@ -162,7 +162,6 @@ class AddModule : AppCompatActivity() {
 
 
         val newRowId = database.insert(ModuleSQLiteDBHelper.MODULES_TABLE, null, values)
-        Toast.makeText(activity, "The new Module Row Id is $newRowId", Toast.LENGTH_LONG).show()
 
         //write module sessions
         for(session in module.moduleSessions) {
@@ -193,7 +192,6 @@ class AddModule : AppCompatActivity() {
                 session.endTime.toString()
             )
             val newSessionRowId = database.insert(ModuleSQLiteDBHelper.MODULE_SESSIONS_TABLE, null, sessionValues)
-            Toast.makeText(activity, "The new Row Id is $newSessionRowId", Toast.LENGTH_LONG).show()
         }
 
     }

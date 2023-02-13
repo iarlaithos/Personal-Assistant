@@ -6,17 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".ViewModulesActivity">
 
-    <Switch
-        android:id="@+id/vmSwitchMode"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="College Mode"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.153" />
-
     <ImageButton
         android:id="@+id/vmbtnMenu"
         android:layout_width="66dp"
@@ -34,6 +23,8 @@
         android:id="@+id/vmbtnHome"
         android:layout_width="78dp"
         android:layout_height="67dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:background="#00000000"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -43,50 +34,48 @@
         android:id="@+id/tvDay"
         android:layout_width="wrap_content"
         android:layout_height="33dp"
+        android:gravity="center"
         android:text="Day "
         android:textSize="24sp"
-        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/vmSwitchMode"
-        app:layout_constraintVertical_bias="0.067" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.206" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recModules"
         android:layout_width="308dp"
         android:layout_height="358dp"
-        android:layout_marginBottom="108dp"
+        android:layout_marginBottom="156dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvDay" />
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageButton
         android:id="@+id/btnPrevDay"
         android:layout_width="38dp"
         android:layout_height="33dp"
+        android:layout_marginStart="92dp"
         android:background="#00000000"
         app:layout_constraintBottom_toTopOf="@+id/recModules"
-        app:layout_constraintEnd_toStartOf="@+id/tvDay"
-        app:layout_constraintHorizontal_bias="0.875"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/vmSwitchMode"
-        app:layout_constraintVertical_bias="0.567"
+        app:layout_constraintTop_toBottomOf="@+id/vmbtnHome"
+        app:layout_constraintVertical_bias="0.608"
         app:srcCompat="@drawable/arrowleft" />
 
     <ImageButton
         android:id="@+id/btnNextDay"
         android:layout_width="38dp"
         android:layout_height="33dp"
+        android:layout_marginBottom="40dp"
         android:background="#00000000"
         app:layout_constraintBottom_toTopOf="@+id/recModules"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.117"
+        app:layout_constraintHorizontal_bias="0.337"
         app:layout_constraintStart_toEndOf="@+id/tvDay"
-        app:layout_constraintTop_toBottomOf="@+id/vmSwitchMode"
-        app:layout_constraintVertical_bias="0.567"
         app:srcCompat="@drawable/arrowright" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,7 +10,7 @@
         android:id="@+id/tvEditModuleView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="48dp"
         android:text="Add Module"
         android:textColor="#000000"
         android:textSize="34sp"
@@ -18,17 +18,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.114"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/EditModuleSwitchMode" />
-
-    <Switch
-        android:id="@+id/EditModuleSwitchMode"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="96dp"
-        android:text="College Mode"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/addModulebtnHome" />
 
     <ImageButton
         android:id="@+id/addModulebtnMenu"

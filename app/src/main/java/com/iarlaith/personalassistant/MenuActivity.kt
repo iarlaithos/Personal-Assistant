@@ -24,6 +24,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.iarlaith.personalassistant.ModuleSQLiteDBHelper.MODULES_TABLE
 import com.iarlaith.personalassistant.ModuleSQLiteDBHelper.MODULE_SESSIONS_TABLE
+import java.io.File
 import java.time.LocalTime
 
 
@@ -39,6 +40,7 @@ class MenuActivity : AppCompatActivity() {
         val signOut = findViewById<TextView>(R.id.tvSignOut)
         val homeButton = findViewById<ImageView>(R.id.MbtnHome)
         val modulesButton = findViewById<TextView>(R.id.tvModules)
+        val toDoListButton = findViewById<TextView>(R.id.tvToDoList)
 
         signOut.setOnClickListener {
             val builder = AlertDialog.Builder(this)
@@ -58,6 +60,8 @@ class MenuActivity : AppCompatActivity() {
                         updateUser()
                         Thread.sleep(1000)
                         correctFirebaseDB(this)
+                        var correctToDos = CorrectToDos()
+                        correctToDos.correctToDoFirebase(this)
                         Thread.sleep(1000)
                         Firebase.auth.signOut()
                     }
@@ -89,6 +93,11 @@ class MenuActivity : AppCompatActivity() {
 
         homeButton.setOnClickListener {
             val intent = Intent(this, HomePageActivity::class.java)
+            startActivity(intent)
+        }
+
+        toDoListButton.setOnClickListener {
+            val intent = Intent(this, ToDoListActivity::class.java)
             startActivity(intent)
         }
 
@@ -161,18 +170,9 @@ class MenuActivity : AppCompatActivity() {
     }
 
     private fun checkDataBase(context: Context): Boolean {
-        var sqLiteDatabase: SQLiteDatabase? = null
-        try {
-            val fullPath = "/data/data/com.iarlaith.personalassistant/databases/modules_database"
-            sqLiteDatabase = SQLiteDatabase.openDatabase(
-                fullPath, null,
-                SQLiteDatabase.OPEN_READONLY
-            )
-        } catch (e: java.lang.Exception) {
-            return false
-        }
-        sqLiteDatabase?.close()
-        return true
+        val fullPath = "/data/data/com.iarlaith.personalassistant/databases/modules_database"
+        val file: File = context.getDatabasePath(fullPath)
+        return file.exists()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
