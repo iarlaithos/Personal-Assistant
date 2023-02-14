@@ -155,23 +155,26 @@ class MainActivity : AppCompatActivity() {
         //if(menuActivityFunctions.getLocalModuleData() != null) {
         val userLocalModules = menuActivityFunctions.getLocalModuleData(this)
         menuActivityFunctions.getFirebaseModuleData { userCloudModules ->
-            if (userCloudModules == null) {
+            if (userCloudModules == null)
+            {
                 Log.d(TAG, "User cloud modules is null")
                 return@getFirebaseModuleData
-            }
-            if (userLocalModules != null) {
-                if (userLocalModules.toString() != userCloudModules.toString() && userLocalModules.size <= userCloudModules.size) {
-                    val differenceModules = userCloudModules.minus(userLocalModules)
-                    for (diffModule in differenceModules) {
-                        addModule.writeNewModuleToSQLite(diffModule, activity)
-                    }
-                }
-            } else {
-                menuActivityFunctions.getFirebaseModuleData { userCloudModules ->
-                    if (userCloudModules != null) {
-                        for (module in userCloudModules) {
-                            addModule.writeNewModuleToSQLite(module, this)
+            }else{
+                if (userLocalModules != null)
+                {
+                    if (userLocalModules.size < userCloudModules.size)
+                    {
+                        val differenceModules = userCloudModules.minus(userLocalModules)
+                        for (diffModule in differenceModules)
+                        {
+                            addModule.writeNewModuleToSQLite(diffModule, this)
                         }
+                    }
+                } else
+                {
+                    for (diffModule in userCloudModules)
+                    {
+                        addModule.writeNewModuleToSQLite(diffModule, activity)
                     }
                 }
             }
@@ -192,7 +195,7 @@ class MainActivity : AppCompatActivity() {
             }else{
                 if (userLocalTodos != null)
                 {
-                    if (userLocalTodos.toString() != userCloudTodos.toString() && userLocalTodos.size <= userCloudTodos.size)
+                    if (userLocalTodos.size <= userCloudTodos.size)
                     {
                         val differenceTodos = userCloudTodos.minus(userLocalTodos)
                         for (diffTodo in differenceTodos)
@@ -208,6 +211,6 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
-        }// end of get
+        }
     }
 }

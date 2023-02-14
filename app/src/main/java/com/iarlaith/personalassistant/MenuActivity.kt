@@ -24,6 +24,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.iarlaith.personalassistant.ModuleSQLiteDBHelper.MODULES_TABLE
 import com.iarlaith.personalassistant.ModuleSQLiteDBHelper.MODULE_SESSIONS_TABLE
+import com.iarlaith.personalassistant.ToDoListSQLiteDBHelper.TODO_TABLE
 import java.io.File
 import java.time.LocalTime
 
@@ -80,10 +81,15 @@ class MenuActivity : AppCompatActivity() {
             alert.show()
 
             val db: SQLiteDatabase = ModuleSQLiteDBHelper(this).writableDatabase
-            db.delete(MODULES_TABLE,null,null);
             db.execSQL("delete from $MODULES_TABLE");
             db.execSQL("delete from $MODULE_SESSIONS_TABLE");
+            db.delete(MODULES_TABLE,null,null);
             db.close()
+
+            val tododb: SQLiteDatabase = ToDoListSQLiteDBHelper(this).writableDatabase
+            tododb.execSQL("delete from $TODO_TABLE");
+            tododb.delete(TODO_TABLE,null,null);
+            tododb.close()
         }
 
         modulesButton.setOnClickListener {
@@ -230,12 +236,16 @@ class MenuActivity : AppCompatActivity() {
         val rootRef = Firebase.database.reference
         val modulesRef = rootRef.child("Modules").child(userId)
 
+        var fetched = false
         val valueEventListener = object : ValueEventListener {
             @RequiresApi(Build.VERSION_CODES.O)
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val userCloudModules = reformatFirebaseData(dataSnapshot)
-                Log.i("Firebase Modules: ", userCloudModules.toString())
-                callback(userCloudModules.toList())
+                if (!fetched) {
+                    fetched = true
+                    val userCloudModules = reformatFirebaseData(dataSnapshot)
+                    Log.i("Firebase Modules: ", userCloudModules.toString())
+                    callback(userCloudModules.toList())
+                }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -243,6 +253,8 @@ class MenuActivity : AppCompatActivity() {
             }
         }
         modulesRef.addListenerForSingleValueEvent(valueEventListener)
+        fetched=false;
+        modulesRef.removeEventListener(valueEventListener)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

@@ -1,5 +1,6 @@
 package com.iarlaith.personalassistant
 
+import android.app.Activity
 import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
 import android.os.Build
@@ -29,7 +30,8 @@ class ViewModulesActivity : AppCompatActivity() {
         var daysList = listOf<String>("MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY","SUNDAY")
         var dayIndex = daysList.indexOf(currentDay)
         var day = daysList[dayIndex]
-        displayModules(day)
+
+        displayModules(day, this)
 
 
         homeButton.setOnClickListener {
@@ -48,7 +50,7 @@ class ViewModulesActivity : AppCompatActivity() {
                 dayIndex = 6
             }
             day = daysList[dayIndex]
-            displayModules(day)
+            displayModules(day, this)
         }
 
         nextDay.setOnClickListener{
@@ -57,18 +59,18 @@ class ViewModulesActivity : AppCompatActivity() {
                 dayIndex = 0
             }
             day = daysList[dayIndex]
-            displayModules(day)
+            displayModules(day, this)
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun displayModules(day : String){
+    fun displayModules(day : String, activity : Activity){
         var viewDay = findViewById<TextView>(R.id.tvDay)
         val recyclerView = findViewById<RecyclerView>(R.id.recModules)
 
         viewDay.text = day
         var moduleList : ArrayList<Module> =ArrayList()
-        val database: SQLiteDatabase = ModuleSQLiteDBHelper(this).readableDatabase
+        val database: SQLiteDatabase = ModuleSQLiteDBHelper(activity).readableDatabase
         val cursorModule = database.rawQuery("SELECT module_name, colour, location, type, day, start_time, end_time FROM module INNER JOIN module_sessions ON module.module_id = module_sessions.module_id WHERE module.module_id IN (SELECT module_id from module_sessions where day = '$day') ORDER BY module_sessions.start_time", null)
         if (cursorModule.moveToFirst()) {
             do {
@@ -93,7 +95,7 @@ class ViewModulesActivity : AppCompatActivity() {
         }
         println("####################################")
 
-        recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        recyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         recyclerView.adapter = ModuleRecycler(moduleList)
     }
 }

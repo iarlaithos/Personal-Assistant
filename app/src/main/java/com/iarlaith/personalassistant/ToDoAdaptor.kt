@@ -163,7 +163,7 @@ class ToDoAdaptor(
     private fun updateSQL(todo : ToDo, holder : ToDoViewHolder){
         var title : String = todo.title
         val database: SQLiteDatabase = ToDoListSQLiteDBHelper(holder.itemView.context).writableDatabase
-        database.execSQL("DELETE FROM  todo WHERE todo_name ='$title'")
+        database.execSQL("DELETE FROM todo WHERE todo_name ='$title'")
         val values = ContentValues()
         values.put(
             ToDoListSQLiteDBHelper.TODO_COLUMN_NAME,
