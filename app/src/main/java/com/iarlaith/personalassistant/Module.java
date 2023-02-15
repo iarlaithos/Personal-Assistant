@@ -26,10 +26,13 @@ public class Module implements Serializable {
     public String colour;
     public List<ModuleSession> moduleSessions;
 
-    public Module(String name, String colour, List<ModuleSession> moduleSessions) {
+    public List<Task> moduleTasks;
+
+    public Module(String name, String colour, List<ModuleSession> moduleSessions, List<Task> moduleTasks) {
         this.name = name;
         this.colour = colour;
         this.moduleSessions = moduleSessions;
+        this.moduleTasks = moduleTasks;
     }
 
     public String getName() {
@@ -56,12 +59,21 @@ public class Module implements Serializable {
         this.moduleSessions = moduleSessions;
     }
 
+    public List<Task> getModuleTasks() {
+        return moduleTasks;
+    }
+
+    public void setModuleTasks(List<Task> moduleTasks) {
+        this.moduleTasks = moduleTasks;
+    }
+
     @Override
     public String toString() {
         return "Module{" +
                 "name='" + name + '\'' +
                 ", colour='" + colour + '\'' +
                 ", moduleSessions=" + moduleSessions +
+                ", moduleTasks=" + moduleTasks +
                 '}';
     }
 }

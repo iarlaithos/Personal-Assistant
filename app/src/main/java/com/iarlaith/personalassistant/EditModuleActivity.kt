@@ -60,7 +60,7 @@ class EditModuleActivity : AppCompatActivity() {
         moduleColour.isVisible = false
         recyclerView.isVisible = false
 
-        var currentModule = Module(null, null,null)
+        var currentModule = Module(null, null,null, null)
         moduleSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parentView: AdapterView<*>?,
@@ -106,7 +106,7 @@ class EditModuleActivity : AppCompatActivity() {
         }
 
         addSessionButton.setOnClickListener {
-            var module : Module = Module(moduleName.text.toString(), moduleColour.selectedItem.toString(),EditSessionRecycler(currentModule.moduleSessions as java.util.ArrayList<ModuleSession>, this@EditModuleActivity).getNewSessions())
+            var module : Module = Module(moduleName.text.toString(), moduleColour.selectedItem.toString(),EditSessionRecycler(currentModule.moduleSessions as java.util.ArrayList<ModuleSession>, this@EditModuleActivity).getNewSessions(), null)
             addSession(module)
         }
 
@@ -117,7 +117,7 @@ class EditModuleActivity : AppCompatActivity() {
         }
 
         confirmModuleButton.setOnClickListener {
-            var module : Module = Module(moduleName.text.toString(), moduleColour.selectedItem.toString(),EditSessionRecycler(currentModule.moduleSessions as java.util.ArrayList<ModuleSession>, this@EditModuleActivity).getNewSessions()  )
+            var module : Module = Module(moduleName.text.toString(), moduleColour.selectedItem.toString(),EditSessionRecycler(currentModule.moduleSessions as java.util.ArrayList<ModuleSession>, this@EditModuleActivity).getNewSessions(), null)
             confirmModule(moduleSelected, module)
         }
 
@@ -133,7 +133,7 @@ class EditModuleActivity : AppCompatActivity() {
        recyclerView.isVisible = true
 
        var moduleId : Int? = null
-       var module : Module = Module(null, null,null)
+       var module : Module = Module(null, null,null, null)
        val database: SQLiteDatabase = ModuleSQLiteDBHelper(this).readableDatabase
        val cursorModule = database.rawQuery("SELECT module_id, module_name, colour FROM module WHERE module_name = '$selectedModule'",null)
        if (cursorModule.moveToFirst()) {

@@ -108,7 +108,7 @@ class HomePageActivity : AppCompatActivity() {
                 var endTime = cursorModule.getString(6)
                 if(dayOfTheWeek == day){
                     moduleList.add(Module(moduleName,moduleColour,listOf(ModuleSession(location, type, day, LocalTime.parse(startTime),
-                        LocalTime.parse(endTime)))))
+                        LocalTime.parse(endTime))),null))
                 }
             } while (cursorModule.moveToNext())
         }

@@ -42,6 +42,7 @@ class MenuActivity : AppCompatActivity() {
         val homeButton = findViewById<ImageView>(R.id.MbtnHome)
         val modulesButton = findViewById<TextView>(R.id.tvModules)
         val toDoListButton = findViewById<TextView>(R.id.tvToDoList)
+        val tasksButton = findViewById<TextView>(R.id.tvTasks)
 
         signOut.setOnClickListener {
             val builder = AlertDialog.Builder(this)
@@ -104,6 +105,11 @@ class MenuActivity : AppCompatActivity() {
 
         toDoListButton.setOnClickListener {
             val intent = Intent(this, ToDoListActivity::class.java)
+            startActivity(intent)
+        }
+
+        tasksButton.setOnClickListener {
+            val intent = Intent(this, TaskMenu::class.java)
             startActivity(intent)
         }
 
@@ -195,6 +201,7 @@ class MenuActivity : AppCompatActivity() {
                         Module(
                             cursorModules.getString(0),
                             cursorModules.getString(1),
+                            null,
                             null
                         )
                     )
@@ -299,7 +306,7 @@ class MenuActivity : AppCompatActivity() {
                     val moduleSession = ModuleSession(location, sessionType, dayOfTheWeek, LocalTime.parse(startTime), LocalTime.parse(endTime))
                     moduleSessions.add(moduleSession)
                 }
-                val module = Module(name,colour,moduleSessions)
+                val module = Module(name,colour,moduleSessions, null)
                 userCloudModules.add(module)
             } catch (e: Exception) {
                 Log.e("firebase", "Error casting data", e)

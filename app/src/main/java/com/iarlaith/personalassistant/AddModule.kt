@@ -44,7 +44,7 @@ class AddModule : AppCompatActivity() {
         colourEnumSpinner.adapter = adapter
         val addSessionButton = findViewById<Button>(R.id.btnAddSession)
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerSessions)
-        var module : Module = Module(null,null,null)
+        var module : Module = Module(null,null,null, null)
         val moduleSessionList : MutableList<ModuleSession> = mutableListOf()
         if(module.moduleSessions != null){
             recyclerView.layoutManager = LinearLayoutManager(this@AddModule, LinearLayoutManager.VERTICAL, false)
@@ -113,7 +113,7 @@ class AddModule : AppCompatActivity() {
         }
 
         addModuleButton.setOnClickListener{
-            val module = Module(enterModName.text.toString(), colourEnumSpinner.selectedItem.toString(), moduleSessionList)
+            val module = Module(enterModName.text.toString(), colourEnumSpinner.selectedItem.toString(), moduleSessionList, null)
             writeNewModuleToSQLite(module, this)
             if(Firebase.auth.currentUser?.uid != null){
                 val userId = Firebase.auth.currentUser!!.uid

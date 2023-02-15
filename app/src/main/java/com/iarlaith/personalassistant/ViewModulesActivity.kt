@@ -82,7 +82,7 @@ class ViewModulesActivity : AppCompatActivity() {
                 var startTime = cursorModule.getString(5)
                 var endTime = cursorModule.getString(6)
                 if(dayOfTheWeek == day){
-                    moduleList.add(Module(moduleName,moduleColour,listOf(ModuleSession(location, type, day, LocalTime.parse(startTime),LocalTime.parse(endTime)))))
+                    moduleList.add(Module(moduleName,moduleColour,listOf(ModuleSession(location, type, day, LocalTime.parse(startTime),LocalTime.parse(endTime))), null))
                 }
             } while (cursorModule.moveToNext())
         }
