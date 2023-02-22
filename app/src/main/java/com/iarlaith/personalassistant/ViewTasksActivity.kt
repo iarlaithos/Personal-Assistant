@@ -68,7 +68,7 @@ class ViewTasksActivity : AppCompatActivity() {
         println("####################################")
 
         recyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        recyclerView.adapter = TaskRecycler(tasks)
+        recyclerView.adapter = TaskRecycler(tasks, this)
 
     }
 }
