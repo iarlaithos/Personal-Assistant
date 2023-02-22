@@ -28,6 +28,8 @@ public class ModuleSQLiteDBHelper extends SQLiteOpenHelper {
     public static final String TASKS_COLUMN_TYPE = "type";
     public static final String TASKS_COLUMN_DATE = "due_date";
     public static final String TASKS_COLUMN_NOTE = "note";
+    public static final String TASKS_COLUMN_ISCHECKED = "is_checked";
+
 
     public ModuleSQLiteDBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -56,6 +58,7 @@ public class ModuleSQLiteDBHelper extends SQLiteOpenHelper {
                 TASKS_COLUMN_TYPE + " TEXT NOT NULL, " +
                 TASKS_COLUMN_DATE + " TEXT NOT NULL, " +
                 TASKS_COLUMN_NOTE + " TEXT NOT NULL, " +
+                TASKS_COLUMN_ISCHECKED + " TEXT NOT NULL, " +
                 MODULE_COLUMN_ID + " INTEGER NOT NULL);");
 
     }

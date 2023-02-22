@@ -12,10 +12,15 @@ class TaskMenu : AppCompatActivity() {
         setContentView(R.layout.activity_task_menu)
 
         val addTaskbtn = findViewById<TextView>(R.id.tvAddTask)
-
+        val viewTasksbtn = findViewById<TextView>(R.id.tvViewTasks)
 
         addTaskbtn.setOnClickListener {
             val intent = Intent(this, AddTask::class.java)
+            startActivity(intent)
+        }
+
+        viewTasksbtn.setOnClickListener {
+            val intent = Intent(this, ViewTasksActivity::class.java)
             startActivity(intent)
         }
     }

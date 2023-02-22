@@ -27,11 +27,14 @@ public class Task implements Serializable {
     private Date dueDate;
     private String note;
 
-    public Task(String title, String taskType, Date dueDate, String note) {
+    private Boolean isChecked;
+
+    public Task(String title, String taskType, Date dueDate, String note, Boolean isChecked) {
         this.title = title;
         this.taskType = taskType;
         this.dueDate = dueDate;
         this.note = note;
+        this.isChecked = isChecked;
     }
 
     public String getTitle() {
@@ -66,6 +69,14 @@ public class Task implements Serializable {
         this.note = note;
     }
 
+    public Boolean getChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(Boolean checked) {
+        isChecked = checked;
+    }
+
     @Override
     public String toString() {
         return "Task{" +
@@ -73,6 +84,7 @@ public class Task implements Serializable {
                 ", taskType='" + taskType + '\'' +
                 ", dueDate=" + dueDate +
                 ", note='" + note + '\'' +
+                ", isChecked=" + isChecked +
                 '}';
     }
 }

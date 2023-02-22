@@ -75,7 +75,8 @@ class AddTask : AppCompatActivity() {
                 }
                 dueDate.text = "Due Date : $datePicked/$monthPicked/$year"
                 println(monthOfYear)
-                inputDate = formatter.parse("$datePicked/$monthPicked/$year")//.of(year, monthOfYear+1, date)
+                inputDate =
+                    formatter.parse("$datePicked/$monthPicked/$year") as Date//.of(year, monthOfYear+1, date)
                 println(inputDueDate)
 
             }, year, month, date)
@@ -83,7 +84,7 @@ class AddTask : AppCompatActivity() {
         }
 
         addTaskbtn.setOnClickListener{
-            val task = Task(taskTitle.text.toString(), taskType.selectedItem.toString(), inputDate, notes.text.toString())
+            val task = Task(taskTitle.text.toString(), taskType.selectedItem.toString(), inputDate, notes.text.toString(), false)
             val moduleName = moduleSpinner.selectedItem.toString()
             writeNewTaskToSQLite(task, moduleName,this)
             if(Firebase.auth.currentUser?.uid != null){
@@ -105,6 +106,7 @@ class AddTask : AppCompatActivity() {
         var moduleId = cursor.getInt(0)
         cursor.close()
 
+        println("CHECK THIS: " + task.dueDate.toString())
         //write module
         val database: SQLiteDatabase = ModuleSQLiteDBHelper(activity).writableDatabase
         val values = ContentValues()
@@ -123,6 +125,10 @@ class AddTask : AppCompatActivity() {
         values.put(
             ModuleSQLiteDBHelper.TASKS_COLUMN_NOTE,
             task.note.toString()
+        )
+        values.put(
+            ModuleSQLiteDBHelper.TASKS_COLUMN_ISCHECKED,
+            task.checked.toString()
         )
         values.put(
             ModuleSQLiteDBHelper.MODULE_COLUMN_ID,
