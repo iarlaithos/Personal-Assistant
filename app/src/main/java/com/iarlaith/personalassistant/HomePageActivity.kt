@@ -15,6 +15,8 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_to_do_list.*
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -54,6 +56,10 @@ class HomePageActivity : AppCompatActivity() {
         prevDay.isVisible = true
         rvModules.isVisible = true
         tvDay.isVisible = true
+
+        val rvTasks = findViewById<RecyclerView>(R.id.recTasks)
+        rvTasks.removeAllViews()
+        displayTasks(this)
 
         menu.setOnClickListener {
             val intent = Intent(this, MenuActivity::class.java)
@@ -123,5 +129,38 @@ class HomePageActivity : AppCompatActivity() {
 
         recyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         recyclerView.adapter = ModuleRecycler(moduleList)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun displayTasks(activity : Activity){
+        val recyclerView = findViewById<RecyclerView>(R.id.recTasks)
+
+        var tasks : ArrayList<Task> =ArrayList()
+        val database: SQLiteDatabase = ModuleSQLiteDBHelper(activity).readableDatabase
+        val cursor = database.rawQuery("SELECT task_title, type, due_date, note, is_checked FROM tasks ", null)
+        if (cursor.moveToFirst()) {
+            do {
+                var taskTitle = cursor.getString(0)
+                var taskType = cursor.getString(1)
+                var taskDueDate = cursor.getString(2)
+                var taskNote = cursor.getString(3)
+                var taskIsChecked = cursor.getString(4) == "1"
+                var formatter: DateFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss zzzz yyyy")
+                var dueDate = formatter.parse(taskDueDate)
+                tasks.add(Task(taskTitle,taskType,dueDate,taskNote,taskIsChecked))
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        println("#######     VIEW TASKS     #######")
+        if (tasks != null) {
+            for (task in tasks) {
+                println(task.toString())
+            }
+        }
+        println("####################################")
+
+        recyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        recyclerView.adapter = TaskRecycler(tasks)
+
     }
 }

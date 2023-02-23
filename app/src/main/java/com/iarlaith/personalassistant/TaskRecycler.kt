@@ -11,7 +11,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import java.time.LocalTime
 
-class TaskRecycler(private val tasks: List<Task> , activity: ViewTasksActivity): RecyclerView.Adapter<TaskRecycler.ViewHolder>() {
+class TaskRecycler(private val tasks: List<Task>): RecyclerView.Adapter<TaskRecycler.ViewHolder>() {
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val taskTitle: TextView = view.findViewById(R.id.tvRecTask)
         val taskDueDate : TextView = view.findViewById(R.id.tvRecDate)
