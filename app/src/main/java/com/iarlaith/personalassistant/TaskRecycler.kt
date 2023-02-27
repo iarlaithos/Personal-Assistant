@@ -29,6 +29,7 @@ class TaskRecycler(private val tasks: List<Task>): RecyclerView.Adapter<TaskRecy
         val taskNote : TextView = view.findViewById(R.id.tvRecNotes)
         val arrow : ImageView = view.findViewById(R.id.arrow)
         val cbTask : CheckBox = view.findViewById(R.id.cbTask)
+        val taskModule : TextView = view.findViewById(R.id.tvTaskModule)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -51,6 +52,7 @@ class TaskRecycler(private val tasks: List<Task>): RecyclerView.Adapter<TaskRecy
         holder.taskNote.isVisible = false
         holder.arrow.isVisible = true
         holder.cbTask.isVisible = true
+        holder.taskModule.isVisible = false
         holder.arrow.bringToFront()
 
         var taskTitle = tasks[position].title
@@ -66,6 +68,7 @@ class TaskRecycler(private val tasks: List<Task>): RecyclerView.Adapter<TaskRecy
             moduleName = cursorModule.getString(1)
         }
         cursorModule.close()
+        holder.taskModule.text = moduleName
         when (colour) {
             "RED" -> {
                 holder.taskTitle.setBackgroundColor(
@@ -81,6 +84,12 @@ class TaskRecycler(private val tasks: List<Task>): RecyclerView.Adapter<TaskRecy
                     )
                 )
                 holder.taskNote.setBackgroundColor(
+                    ContextCompat.getColor(
+                        holder.taskNote.context,
+                        R.color.red
+                    )
+                )
+                holder.taskModule.setBackgroundColor(
                     ContextCompat.getColor(
                         holder.taskNote.context,
                         R.color.red
@@ -106,6 +115,12 @@ class TaskRecycler(private val tasks: List<Task>): RecyclerView.Adapter<TaskRecy
                         R.color.orange
                     )
                 )
+                holder.taskModule.setBackgroundColor(
+                    ContextCompat.getColor(
+                        holder.taskNote.context,
+                        R.color.orange
+                    )
+                )
             }
             "YELLOW" ->{
                 holder.taskTitle.setBackgroundColor(
@@ -121,6 +136,12 @@ class TaskRecycler(private val tasks: List<Task>): RecyclerView.Adapter<TaskRecy
                     )
                 )
                 holder.taskNote.setBackgroundColor(
+                    ContextCompat.getColor(
+                        holder.taskNote.context,
+                        R.color.yellow
+                    )
+                )
+                holder.taskModule.setBackgroundColor(
                     ContextCompat.getColor(
                         holder.taskNote.context,
                         R.color.yellow
@@ -146,6 +167,12 @@ class TaskRecycler(private val tasks: List<Task>): RecyclerView.Adapter<TaskRecy
                         R.color.green
                     )
                 )
+                holder.taskModule.setBackgroundColor(
+                    ContextCompat.getColor(
+                        holder.taskNote.context,
+                        R.color.green
+                    )
+                )
             }
             "BLUE" -> {
                 holder.taskTitle.setBackgroundColor(
@@ -161,6 +188,12 @@ class TaskRecycler(private val tasks: List<Task>): RecyclerView.Adapter<TaskRecy
                     )
                 )
                 holder.taskNote.setBackgroundColor(
+                    ContextCompat.getColor(
+                        holder.taskNote.context,
+                        R.color.blue
+                    )
+                )
+                holder.taskModule.setBackgroundColor(
                     ContextCompat.getColor(
                         holder.taskNote.context,
                         R.color.blue
@@ -186,6 +219,12 @@ class TaskRecycler(private val tasks: List<Task>): RecyclerView.Adapter<TaskRecy
                         R.color.purple_500
                     )
                 )
+                holder.taskModule.setBackgroundColor(
+                    ContextCompat.getColor(
+                        holder.taskNote.context,
+                        R.color.purple_500
+                    )
+                )
             }
             "PINK" -> {
                 holder.taskTitle.setBackgroundColor(
@@ -201,6 +240,12 @@ class TaskRecycler(private val tasks: List<Task>): RecyclerView.Adapter<TaskRecy
                     )
                 )
                 holder.taskNote.setBackgroundColor(
+                    ContextCompat.getColor(
+                        holder.taskNote.context,
+                        R.color.pink
+                    )
+                )
+                holder.taskModule.setBackgroundColor(
                     ContextCompat.getColor(
                         holder.taskNote.context,
                         R.color.pink
@@ -226,6 +271,12 @@ class TaskRecycler(private val tasks: List<Task>): RecyclerView.Adapter<TaskRecy
                         R.color.white
                     )
                 )
+                holder.taskModule.setBackgroundColor(
+                    ContextCompat.getColor(
+                        holder.taskNote.context,
+                        R.color.white
+                    )
+                )
             }
             else -> {
                 holder.taskTitle.setBackgroundColor(
@@ -246,6 +297,12 @@ class TaskRecycler(private val tasks: List<Task>): RecyclerView.Adapter<TaskRecy
                         R.color.white
                     )
                 )
+                holder.taskModule.setBackgroundColor(
+                    ContextCompat.getColor(
+                        holder.taskNote.context,
+                        R.color.white
+                    )
+                )
             }
         }
 
@@ -254,10 +311,12 @@ class TaskRecycler(private val tasks: List<Task>): RecyclerView.Adapter<TaskRecy
                 holder.arrow.rotation = 90F
                 holder.taskType.isVisible = true
                 holder.taskNote.isVisible = true
+                holder.taskModule.isVisible = true
             }else{
                 holder.arrow.rotation = 0F
                 holder.taskType.isVisible = false
                 holder.taskNote.isVisible = false
+                holder.taskModule.isVisible = false
             }
         }
 

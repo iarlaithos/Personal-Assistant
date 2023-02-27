@@ -75,6 +75,7 @@ class HomePageActivity : AppCompatActivity() {
             nextDay.isVisible = !isChecked
             prevDay.isVisible = !isChecked
             rvModules.isVisible = !isChecked
+            rvTasks.isVisible = !isChecked
             tvDay.isVisible = !isChecked
             taskBanner.isVisible = !isChecked
             sessionBanner.isVisible = !isChecked
@@ -150,7 +151,7 @@ class HomePageActivity : AppCompatActivity() {
                 var taskType = cursor.getString(1)
                 var taskDueDate = cursor.getString(2)
                 var taskNote = cursor.getString(3)
-                var taskIsChecked = cursor.getString(4) == "1"
+                var taskIsChecked = cursor.getString(4) == "true"
                 var formatter: DateFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss zzzz yyyy")
                 var dueDate = formatter.parse(taskDueDate)
                 tasks.add(Task(taskTitle,taskType,dueDate,taskNote,taskIsChecked))

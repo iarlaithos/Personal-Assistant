@@ -73,6 +73,7 @@ class MainActivity : AppCompatActivity() {
             ) {
                 correctSQLDB(this)
                 correctSQLToDoDB(this)
+                Thread.sleep(1000)
                 val intent = Intent(this, HomePageActivity::class.java)
                 startActivity(intent)
             }
@@ -110,6 +111,7 @@ class MainActivity : AppCompatActivity() {
                     spEditor.apply()
                     correctSQLDB(this)
                     correctSQLToDoDB(this)
+                    Thread.sleep(1000)
                     val intent = Intent(this, HomePageActivity::class.java)
                     startActivity(intent)
                 }

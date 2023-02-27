@@ -278,7 +278,7 @@ class MenuActivity : AppCompatActivity() {
                     for (task in tasks) {
                         val title = task["title"] as String
                         val type = task["taskType"] as String
-                        val note = task["taskType"] as String
+                        val note = task["note"] as String
                         val isDone = task["checked"] as Boolean
                         val dueDateData : HashMap<String, String> = task["dueDate"] as HashMap<String, String>
                         var dueDateYear = dueDateData["year"].toString()
