@@ -77,4 +77,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvRecTaskType" />
 
+    <CheckBox
+        android:id="@+id/cbTask"
+        android:layout_width="36dp"
+        android:layout_height="29dp"
+        android:backgroundTint="#FFFFFF"
+        android:buttonTint="#000000"
+        app:layout_constraintBottom_toTopOf="@+id/tvRecTaskType"
+        app:layout_constraintEnd_toStartOf="@+id/tvRecDate"
+        app:layout_constraintTop_toTopOf="@+id/tvRecTask" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

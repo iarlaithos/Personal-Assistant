@@ -26,12 +26,14 @@ import com.iarlaith.personalassistant.ModuleSQLiteDBHelper.MODULES_TABLE
 import com.iarlaith.personalassistant.ModuleSQLiteDBHelper.MODULE_SESSIONS_TABLE
 import com.iarlaith.personalassistant.ToDoListSQLiteDBHelper.TODO_TABLE
 import java.io.File
+import java.text.SimpleDateFormat
 import java.time.LocalTime
 
 
 class MenuActivity : AppCompatActivity() {
     private lateinit var database: DatabaseReference
     private lateinit var userFirebaseModules: List<Module>
+    val formatter = SimpleDateFormat("dd/MM/yyyy")
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -147,11 +149,6 @@ class MenuActivity : AppCompatActivity() {
             }
             if (userLocalModules != null) {
                 if (userLocalModules.toString() != userCloudModules.toString() && userLocalModules.size >= userCloudModules.size) {
-                    println("#############################")
-                    println("Not equal")
-                    println(userLocalModules)
-                    println(userCloudModules)
-                    println("#############################")
                     val differenceModules = userLocalModules?.minus(userCloudModules)
                     if (differenceModules != null) {
                         for (diffModule in differenceModules) {
@@ -274,6 +271,37 @@ class MenuActivity : AppCompatActivity() {
                 val name = value["name"] as String
                 val colour = value["colour"] as String
                 val sessions = value["moduleSessions"] as List<Map<String, Any>>
+                val moduleTasks = ArrayList<Task>()
+                if(value["moduleTasks"] != null){
+                    val tasksMap = value["moduleTasks"] as HashMap<String, Any>
+                    val tasks = tasksMap.values.toList() as List<Map<String, Any>>
+                    for (task in tasks) {
+                        val title = task["title"] as String
+                        val type = task["taskType"] as String
+                        val note = task["taskType"] as String
+                        val isDone = task["checked"] as Boolean
+                        val dueDateData : HashMap<String, String> = task["dueDate"] as HashMap<String, String>
+                        var dueDateYear = dueDateData["year"].toString()
+                        var dueDateDate  = dueDateData["date"].toString()
+                        var dueDateMonthInt = ((dueDateData["month"]).toString().toInt() + 1) as Int
+                        var dueDateMonth = dueDateMonthInt.toString()
+                        if(dueDateMonthInt < 10){
+                            dueDateMonth = "0$dueDateMonth"
+                        }
+                        var dueDateDateInt = ((dueDateData["date"]).toString().toInt() + 1) as Int
+                        if(dueDateDateInt < 10){
+                            dueDateDate = "0$dueDateDate"
+                        }
+                        val dueDate = formatter.parse("$dueDateDate/$dueDateMonth/$dueDateYear")
+
+                        val moduleTask = Task(title, type, dueDate, note, isDone)
+                        println("*****************************")
+                        println(moduleTask.toString())
+                        println("*****************************")
+                        moduleTasks.add(moduleTask)
+                    }
+                }
+
                 val moduleSessions = ArrayList<ModuleSession>()
                 for (session in sessions) {
                     val location = session["location"] as String
@@ -306,7 +334,7 @@ class MenuActivity : AppCompatActivity() {
                     val moduleSession = ModuleSession(location, sessionType, dayOfTheWeek, LocalTime.parse(startTime), LocalTime.parse(endTime))
                     moduleSessions.add(moduleSession)
                 }
-                val module = Module(name,colour,moduleSessions, null)
+                val module = Module(name,colour,moduleSessions, moduleTasks)
                 userCloudModules.add(module)
             } catch (e: Exception) {
                 Log.e("firebase", "Error casting data", e)

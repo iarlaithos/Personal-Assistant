@@ -1,5 +1,6 @@
 package com.iarlaith.personalassistant
 
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
@@ -176,11 +177,11 @@ class EditTaskActivity : AppCompatActivity() {
         confirmTaskButton.setOnClickListener {
             var dateString = dueDate.text.toString().split(": ")
             var date : Date =  formatter.parse(dateString[1]) as Date
-            confirmTask(taskSelected, Task(etTaskTitle.text.toString(),typeSpinner.selectedItem.toString(), date, notes.text.toString() ,currentTask.checked), moduleSpinner.selectedItem.toString())
+            confirmTask(taskSelected, Task(etTaskTitle.text.toString(),typeSpinner.selectedItem.toString(), date, notes.text.toString() ,currentTask.checked), moduleSpinner.selectedItem.toString(), this)
         }
 
         deleteTaskButton.setOnClickListener {
-            deleteTask(taskSelected)
+            deleteTask(taskSelected, this)
             val intent = Intent(this, TaskMenu::class.java)
             startActivity(intent)
         }
@@ -236,21 +237,21 @@ class EditTaskActivity : AppCompatActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun confirmTask(taskSelected: String, task: Task, newModule: String) {
+    fun confirmTask(taskSelected: String, task: Task, newModule: String, activity : Activity) {
         val userId = Firebase.auth.currentUser!!.uid
         val addTask = AddTask()
-        deleteTask(taskSelected)
-        addTask.writeNewTaskToSQLite(task, newModule, this)
+        deleteTask(taskSelected, activity)
+        addTask.writeNewTaskToSQLite(task, newModule, activity)
         Thread.sleep(1000)
         writeNewTaskToDB(userId, task, newModule)
-        val intent = Intent(this, TaskMenu::class.java)
+        val intent = Intent(activity, TaskMenu::class.java)
         startActivity(intent)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun deleteTask(taskSelected: String) {
+    fun deleteTask(taskSelected: String, activity : Activity) {
         val userId = Firebase.auth.currentUser!!.uid
-        val db: SQLiteDatabase = ModuleSQLiteDBHelper(this).writableDatabase
+        val db: SQLiteDatabase = ModuleSQLiteDBHelper(activity).writableDatabase
         db.execSQL( "DELETE FROM tasks WHERE task_title = '$taskSelected'")
         val dbRef = FirebaseDatabase.getInstance().getReference("Modules")
         val queryRef: Query =

@@ -151,6 +151,7 @@ class MainActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun correctSQLDB(activity: Activity) {
         val addModule = AddModule()
+        val addTask = AddTask()
         val menuActivityFunctions = MenuActivity()
         //if(menuActivityFunctions.getLocalModuleData() != null) {
         val userLocalModules = menuActivityFunctions.getLocalModuleData(this)
@@ -168,6 +169,9 @@ class MainActivity : AppCompatActivity() {
                         for (diffModule in differenceModules)
                         {
                             addModule.writeNewModuleToSQLite(diffModule, this)
+                            for(task in diffModule.moduleTasks){
+                                addTask.writeNewTaskToSQLite(task, diffModule.name, this)
+                            }
                         }
                     }
                 } else
@@ -175,6 +179,9 @@ class MainActivity : AppCompatActivity() {
                     for (diffModule in userCloudModules)
                     {
                         addModule.writeNewModuleToSQLite(diffModule, activity)
+                        for(task in diffModule.moduleTasks){
+                            addTask.writeNewTaskToSQLite(task, diffModule.name, this)
+                        }
                     }
                 }
             }
