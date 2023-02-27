@@ -43,6 +43,8 @@ class HomePageActivity : AppCompatActivity() {
 
         val prevDay = findViewById<ImageView>(R.id.btnPrevDay)
         val nextDay = findViewById<ImageView>(R.id.btnNextDay)
+        val taskBanner = findViewById<TextView>(R.id.tvUpcomingTasks)
+        val sessionBanner = findViewById<TextView>(R.id.tvTodaysSessions)
 
         val tvDay = findViewById<TextView>(R.id.tvDay)
         val rvModules = findViewById<RecyclerView>(R.id.recModules)
@@ -56,6 +58,8 @@ class HomePageActivity : AppCompatActivity() {
         prevDay.isVisible = true
         rvModules.isVisible = true
         tvDay.isVisible = true
+        taskBanner.isVisible = true
+        sessionBanner.isVisible = true
 
         val rvTasks = findViewById<RecyclerView>(R.id.recTasks)
         rvTasks.removeAllViews()
@@ -72,6 +76,8 @@ class HomePageActivity : AppCompatActivity() {
             prevDay.isVisible = !isChecked
             rvModules.isVisible = !isChecked
             tvDay.isVisible = !isChecked
+            taskBanner.isVisible = !isChecked
+            sessionBanner.isVisible = !isChecked
         }
 
         prevDay.setOnClickListener{

@@ -13,6 +13,7 @@ class TaskMenu : AppCompatActivity() {
 
         val addTaskbtn = findViewById<TextView>(R.id.tvAddTask)
         val viewTasksbtn = findViewById<TextView>(R.id.tvViewTasks)
+        val editTaskbtn = findViewById<TextView>(R.id.tvEditTask)
 
         addTaskbtn.setOnClickListener {
             val intent = Intent(this, AddTask::class.java)
@@ -21,6 +22,11 @@ class TaskMenu : AppCompatActivity() {
 
         viewTasksbtn.setOnClickListener {
             val intent = Intent(this, ViewTasksActivity::class.java)
+            startActivity(intent)
+        }
+
+        editTaskbtn.setOnClickListener {
+            val intent = Intent(this, EditTaskActivity::class.java)
             startActivity(intent)
         }
     }

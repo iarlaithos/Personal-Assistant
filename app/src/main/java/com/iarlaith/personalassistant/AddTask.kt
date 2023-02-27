@@ -91,7 +91,7 @@ class AddTask : AppCompatActivity() {
                 val userId = Firebase.auth.currentUser!!.uid
                 writeNewTaskToDB(userId, task, moduleName)
             }
-            val intent = Intent(this, ModulesMenu::class.java)
+            val intent = Intent(this, TaskMenu::class.java)
             startActivity(intent)
         }
 
@@ -100,13 +100,13 @@ class AddTask : AppCompatActivity() {
     @SuppressLint("Range")
     fun writeNewTaskToSQLite(task: Task, moduleName : String, activity: Activity) {
 
-        val db: SQLiteDatabase = ModuleSQLiteDBHelper(this).readableDatabase
+        val db: SQLiteDatabase = ModuleSQLiteDBHelper(activity).readableDatabase
         val cursor = db.rawQuery( "SELECT module_id FROM module WHERE module_name = '$moduleName'",null)
         cursor.moveToFirst()
         var moduleId = cursor.getInt(0)
         cursor.close()
 
-        println("CHECK THIS: " + task.dueDate.toString())
+        println(task.toString())
         //write module
         val database: SQLiteDatabase = ModuleSQLiteDBHelper(activity).writableDatabase
         val values = ContentValues()
@@ -138,13 +138,16 @@ class AddTask : AppCompatActivity() {
     }
 
     fun writeNewTaskToDB(userId: String, task: Task, moduleName: String) {
-        Thread.sleep(2000)
 
         val ref = FirebaseDatabase.getInstance().getReference("Modules").child(userId)
         val queryRef: Query = ref.orderByChild("name").equalTo(moduleName)
         queryRef.addChildEventListener(object : ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previousChild: String?) {
-                snapshot.ref.child("moduleTasks").setValue(task)
+                snapshot.ref.child("moduleTasks").push().setValue(task).addOnCompleteListener{
+                    println("write Task to DB Success")
+                }.addOnFailureListener{ err ->
+                    println("write Task to DB Fail: $err")
+                }
             }
 
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {

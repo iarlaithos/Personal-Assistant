@@ -17,7 +17,7 @@ class TaskRecycler(private val tasks: List<Task>): RecyclerView.Adapter<TaskRecy
         val taskDueDate : TextView = view.findViewById(R.id.tvRecDate)
         val taskType : TextView = view.findViewById(R.id.tvRecTaskType)
         val taskNote : TextView = view.findViewById(R.id.tvRecNotes)
-        val arrow : ImageView = view.findViewById(R.id.smallArrow)
+        val arrow : ImageView = view.findViewById(R.id.arrow)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -28,14 +28,16 @@ class TaskRecycler(private val tasks: List<Task>): RecyclerView.Adapter<TaskRecy
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.taskTitle.text = tasks[position].title
         var dueDate = tasks[position].dueDate.toString().split(" ")
-        holder.taskDueDate.text = dueDate[0] + " " + dueDate[1] + " " + dueDate[2]
+        holder.taskDueDate.text = dueDate[0] + "\n" + dueDate[1] + " " + dueDate[2]
         holder.taskType.text = tasks[position].taskType
-        holder.taskNote.text = (tasks[position].note).toString()
+        holder.taskNote.text = (tasks[position] .note).toString()
 
         holder.taskTitle.isVisible = true
         holder.taskDueDate.isVisible = true
         holder.taskType.isVisible = false
         holder.taskNote.isVisible = false
+        holder.arrow.isVisible = true
+        holder.arrow.bringToFront()
 
         var taskTitle = tasks[position].title
         var colour = "RED"

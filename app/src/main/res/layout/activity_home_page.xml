@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".HomePageActivity">
@@ -10,13 +15,12 @@
         android:id="@+id/switchMode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="112dp"
         android:text="College Mode"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.377"
+        app:layout_constraintHorizontal_bias="0.417"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.163" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
         android:id="@+id/btnMenu"
@@ -46,8 +50,8 @@
         android:id="@+id/tvPersonalMode"
         android:layout_width="109dp"
         android:layout_height="20dp"
-        android:layout_marginTop="118dp"
-        android:layout_marginEnd="64dp"
+        android:layout_marginTop="116dp"
+        android:layout_marginEnd="48dp"
         android:text="Personal Mode"
         android:textColor="#000000"
         app:layout_constraintEnd_toEndOf="parent"
@@ -58,6 +62,7 @@
         android:layout_width="381dp"
         android:layout_height="554dp"
         android:layout_marginTop="20dp"
+        android:scrollbars="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
@@ -72,16 +77,16 @@
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.526"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.223" />
+        app:layout_constraintTop_toBottomOf="@+id/switchMode"
+        app:layout_constraintVertical_bias="0.0" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recModules"
         android:layout_width="304dp"
-        android:layout_height="232dp"
-        android:layout_marginTop="28dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="56dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
@@ -90,9 +95,10 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recTasks"
         android:layout_width="306dp"
-        android:layout_height="209dp"
-        android:layout_marginTop="40dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.485"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/recModules" />
 
@@ -101,22 +107,52 @@
         android:layout_width="38dp"
         android:layout_height="33dp"
         android:layout_marginEnd="28dp"
-        android:layout_marginBottom="28dp"
+        android:layout_marginBottom="56dp"
         android:background="#00000000"
         app:layout_constraintBottom_toTopOf="@+id/recModules"
         app:layout_constraintEnd_toStartOf="@+id/tvDay"
-        app:layout_constraintVertical_bias="0.608"
         app:srcCompat="@drawable/arrowleft" />
 
     <ImageButton
         android:id="@+id/btnNextDay"
         android:layout_width="38dp"
         android:layout_height="33dp"
-        android:layout_marginStart="28dp"
-        android:layout_marginBottom="28dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="56dp"
         android:background="#00000000"
         app:layout_constraintBottom_toTopOf="@+id/recModules"
         app:layout_constraintStart_toEndOf="@+id/tvDay"
         app:srcCompat="@drawable/arrowright" />
 
+    <TextView
+        android:id="@+id/tvTodaysSessions"
+        android:layout_width="304dp"
+        android:layout_height="wrap_content"
+        android:background="#000000"
+        android:text="Sessions"
+        android:gravity="center"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/recModules"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tvUpcomingTasks"
+        android:layout_width="306dp"
+        android:layout_height="25dp"
+        android:background="#000000"
+        android:text="Tasks"
+        android:gravity="center"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/recTasks"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.485"
+        app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

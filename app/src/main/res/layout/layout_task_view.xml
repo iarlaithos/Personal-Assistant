@@ -3,21 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:layout_editor_absoluteX="26dp"
+    tools:layout_editor_absoluteY="0dp">
 
     <TextView
-        android:id="@+id/tvRecTask"
-        android:layout_width="219dp"
-        android:layout_height="37dp"
+        android:id="@+id/tvRecDate"
+        android:layout_width="67dp"
+        android:layout_height="38dp"
         android:layout_marginTop="4dp"
         android:gravity="center"
-        android:text="Title"
+        android:text="TextView"
         android:textColor="#000000"
-        android:textSize="14sp"
+        android:textColorHint="#000000"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.083"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/tvRecTask"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -30,9 +32,36 @@
         android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.083"
+        app:layout_constraintHorizontal_bias="0.27"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvRecTask" />
+
+    <ImageView
+        android:id="@+id/arrow"
+        android:layout_width="40dp"
+        android:layout_height="37dp"
+        app:layout_constraintBottom_toBottomOf="@+id/tvRecTask"
+        app:layout_constraintEnd_toEndOf="@+id/tvRecTask"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/tvRecTask"
+        app:layout_constraintTop_toTopOf="@+id/tvRecTask"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/smallarrow" />
+
+    <TextView
+        android:id="@+id/tvRecTask"
+        android:layout_width="219dp"
+        android:layout_height="37dp"
+        android:layout_marginTop="4dp"
+        android:gravity="center"
+        android:text="Title"
+        android:textColor="#000000"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.27"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tvRecNotes"
@@ -44,35 +73,8 @@
         android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.083"
+        app:layout_constraintHorizontal_bias="0.27"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvRecTaskType" />
-
-    <TextView
-        android:id="@+id/tvRecDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:gravity="center"
-        android:text="TextView"
-        android:textColor="#000000"
-        android:textColorHint="#000000"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/tvRecTask"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/smallArrow"
-        android:layout_width="40dp"
-        android:layout_height="37dp"
-        app:layout_constraintBottom_toBottomOf="@+id/tvRecTask"
-        app:layout_constraintEnd_toEndOf="@+id/tvRecTask"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/tvRecTask"
-        app:layout_constraintTop_toTopOf="@+id/tvRecTask"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/smallarrow" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
