@@ -82,4 +82,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvAddTask" />
 
+    <ImageView
+        android:id="@+id/micButton"
+        android:layout_width="60dp"
+        android:layout_height="61dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toStartOf="@+id/tmbtnMenu"
+        app:layout_constraintHorizontal_bias="0.505"
+        app:layout_constraintStart_toEndOf="@+id/tmbtnHome"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/microphone" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

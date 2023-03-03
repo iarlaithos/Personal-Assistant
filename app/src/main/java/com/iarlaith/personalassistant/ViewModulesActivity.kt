@@ -6,16 +6,22 @@ import android.database.sqlite.SQLiteDatabase
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.speech.RecognizerIntent
+import android.speech.SpeechRecognizer
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.time.LocalDate
 import java.time.LocalTime
+import java.util.*
+import kotlin.collections.ArrayList
 
 class ViewModulesActivity : AppCompatActivity() {
+    private val SPEECH_REC = 110
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,6 +31,8 @@ class ViewModulesActivity : AppCompatActivity() {
         val menuButton = findViewById<ImageButton>(R.id.vmbtnMenu)
         val prevDay = findViewById<ImageView>(R.id.btnPrevDay)
         val nextDay = findViewById<ImageView>(R.id.btnNextDay)
+        val micButton = findViewById<ImageView>(R.id.micButton)
+
 
         var currentDay = LocalDate.now().dayOfWeek.name.uppercase()
         var daysList = listOf<String>("MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY","SUNDAY")
@@ -44,6 +52,10 @@ class ViewModulesActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        micButton.setOnClickListener {
+            askSpeechInput()
+        }
+
         prevDay.setOnClickListener{
             dayIndex --
             if(dayIndex == -1){
@@ -60,6 +72,79 @@ class ViewModulesActivity : AppCompatActivity() {
             }
             day = daysList[dayIndex]
             displayModules(day, this)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if(requestCode == SPEECH_REC && resultCode == Activity.RESULT_OK){
+            val result = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+            val input = result?.get(0).toString()
+            println(input)
+            val filenames = listOf(
+                "AddModule.txt",
+                "AddTask.txt",
+                "EditModuleActivity.txt",
+                "EditTaskActivity.txt",
+                "HomePageActivity.txt",
+                "MenuActivity.txt",
+                "ModulesMenu.txt",
+                "TaskMenu.txt",
+                "ToDoListActivity.txt",
+                "ViewModulesActivity.txt",
+                "ViewTasksActivity.txt",
+            )
+
+            val counts = SpeechInputHandler.countOccurrences(this, input, filenames)
+            val maxFilename = SpeechInputHandler.getMaxCountFilename(counts)
+            println("File with most occurrences of input string: $maxFilename")
+            println("**************** SPEECH INPUT ********************")
+
+            if(maxFilename.equals("Not Sure")){
+                Toast.makeText(
+                    this,
+                    maxFilename,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }else{
+                val destination = maxFilename
+                var intent = Intent(this, this::class.java)
+                when (destination) {
+                    "AddModule.txt" -> intent = Intent(this, AddModule::class.java)
+                    "AddTask.txt" -> intent = Intent(this, AddTask::class.java)
+                    "EditModuleActivity.txt" -> intent = Intent(this, EditModuleActivity::class.java)
+                    "EditTaskActivity.txt" -> intent = Intent(this, EditTaskActivity::class.java)
+                    "HomePageActivity.txt" -> intent = Intent(this, HomePageActivity::class.java)
+                    "MenuActivity.txt" -> intent = Intent(this, MenuActivity::class.java)
+                    "ModulesMenu.txt" -> intent = Intent(this, ModulesMenu::class.java)
+                    "TaskMenu.txt" -> intent = Intent(this, TaskMenu::class.java)
+                    "ToDoListActivity.txt" -> intent = Intent(this, ToDoListActivity::class.java)
+                    "ViewModulesActivity.txt" -> intent = Intent(this, ViewModulesActivity::class.java)
+                    "ViewTasksActivity.txt" -> intent = Intent(this, ViewTasksActivity::class.java)
+                    else -> { // Note the block
+                        Toast.makeText(
+                            this,
+                            maxFilename,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+                startActivity(intent)
+            }
+
+        }
+    }
+
+    private fun askSpeechInput() {
+        if(!SpeechRecognizer.isRecognitionAvailable(this)) {
+            println("Speech recognition is not available")
+        }else{
+            val i = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+            i.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+            i.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+            i.putExtra(RecognizerIntent.EXTRA_PROMPT, "What can I help you with?")
+            startActivityForResult(i, SPEECH_REC)
         }
     }
 

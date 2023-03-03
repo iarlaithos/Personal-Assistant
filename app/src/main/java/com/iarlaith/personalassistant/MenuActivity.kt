@@ -1,5 +1,6 @@
 package com.iarlaith.personalassistant
 
+import android.R.string
 import android.app.Activity
 import android.content.ContentValues.TAG
 import android.content.Context
@@ -10,6 +11,8 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
+import android.speech.RecognizerIntent
+import android.speech.SpeechRecognizer
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
@@ -22,18 +25,21 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.iarlaith.personalassistant.ModuleSQLiteDBHelper.MODULES_TABLE
-import com.iarlaith.personalassistant.ModuleSQLiteDBHelper.MODULE_SESSIONS_TABLE
+import com.iarlaith.personalassistant.ModuleSQLiteDBHelper.*
 import com.iarlaith.personalassistant.ToDoListSQLiteDBHelper.TODO_TABLE
 import java.io.File
+import java.io.IOException
+import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.time.LocalTime
+import java.util.*
 
 
 class MenuActivity : AppCompatActivity() {
     private lateinit var database: DatabaseReference
     private lateinit var userFirebaseModules: List<Module>
     val formatter = SimpleDateFormat("dd/MM/yyyy")
+    private val SPEECH_REC = 106
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,6 +51,7 @@ class MenuActivity : AppCompatActivity() {
         val modulesButton = findViewById<TextView>(R.id.tvModules)
         val toDoListButton = findViewById<TextView>(R.id.tvToDoList)
         val tasksButton = findViewById<TextView>(R.id.tvTasks)
+        val micButton = findViewById<ImageView>(R.id.micButton)
 
         signOut.setOnClickListener {
             val builder = AlertDialog.Builder(this)
@@ -86,6 +93,7 @@ class MenuActivity : AppCompatActivity() {
             val db: SQLiteDatabase = ModuleSQLiteDBHelper(this).writableDatabase
             db.execSQL("delete from $MODULES_TABLE");
             db.execSQL("delete from $MODULE_SESSIONS_TABLE");
+            db.execSQL("delete from $TASKS_TABLE");
             db.delete(MODULES_TABLE,null,null);
             db.close()
 
@@ -115,6 +123,83 @@ class MenuActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        micButton.setOnClickListener {
+            askSpeechInput()
+        }
+
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if(requestCode == SPEECH_REC && resultCode == Activity.RESULT_OK){
+            val result = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+            val input = result?.get(0).toString()
+            println(input)
+            val filenames = listOf(
+                "AddModule.txt",
+                "AddTask.txt",
+                "EditModuleActivity.txt",
+                "EditTaskActivity.txt",
+                "HomePageActivity.txt",
+                "MenuActivity.txt",
+                "ModulesMenu.txt",
+                "TaskMenu.txt",
+                "ToDoListActivity.txt",
+                "ViewModulesActivity.txt",
+                "ViewTasksActivity.txt",
+            )
+
+            val counts = SpeechInputHandler.countOccurrences(this, input, filenames)
+            val maxFilename = SpeechInputHandler.getMaxCountFilename(counts)
+            println("File with most occurrences of input string: $maxFilename")
+            println("**************** SPEECH INPUT ********************")
+
+            if(maxFilename.equals("Not Sure")){
+                Toast.makeText(
+                    this,
+                    maxFilename,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }else{
+                val destination = maxFilename
+                var intent = Intent(this, this::class.java)
+                when (destination) {
+                    "AddModule.txt" -> intent = Intent(this, AddModule::class.java)
+                    "AddTask.txt" -> intent = Intent(this, AddTask::class.java)
+                    "EditModuleActivity.txt" -> intent = Intent(this, EditModuleActivity::class.java)
+                    "EditTaskActivity.txt" -> intent = Intent(this, EditTaskActivity::class.java)
+                    "HomePageActivity.txt" -> intent = Intent(this, HomePageActivity::class.java)
+                    "MenuActivity.txt" -> intent = Intent(this, MenuActivity::class.java)
+                    "ModulesMenu.txt" -> intent = Intent(this, ModulesMenu::class.java)
+                    "TaskMenu.txt" -> intent = Intent(this, TaskMenu::class.java)
+                    "ToDoListActivity.txt" -> intent = Intent(this, ToDoListActivity::class.java)
+                    "ViewModulesActivity.txt" -> intent = Intent(this, ViewModulesActivity::class.java)
+                    "ViewTasksActivity.txt" -> intent = Intent(this, ViewTasksActivity::class.java)
+                    else -> { // Note the block
+                        Toast.makeText(
+                            this,
+                            maxFilename,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+                startActivity(intent)
+            }
+
+        }
+    }
+
+    private fun askSpeechInput() {
+        if(!SpeechRecognizer.isRecognitionAvailable(this)) {
+            println("Speech recognition is not available")
+        }else{
+            val i = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+            i.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+            i.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+            i.putExtra(RecognizerIntent.EXTRA_PROMPT, "What can I help you with?")
+            startActivityForResult(i, SPEECH_REC)
+        }
     }
 
     private fun checkForInternet(context: Context): Boolean {

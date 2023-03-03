@@ -1,0 +1,5 @@
+view module
+view module screen
+view module page
+show
+modules

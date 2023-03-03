@@ -3,6 +3,7 @@ package com.iarlaith.personalassistant
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ContentValues
+import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.os.Build
 import android.view.LayoutInflater
@@ -43,7 +44,7 @@ class TaskRecycler(private val tasks: List<Task>): RecyclerView.Adapter<TaskRecy
         var dueDate = tasks[position].dueDate.toString().split(" ")
         holder.taskDueDate.text = dueDate[0] + "\n" + dueDate[1] + " " + dueDate[2]
         holder.taskType.text = tasks[position].taskType
-        holder.taskNote.text = (tasks[position] .note).toString()
+        holder.taskNote.text = (tasks[position].note).toString()
         holder.cbTask.isChecked = tasks[position].checked
 
         holder.taskTitle.isVisible = true
@@ -58,11 +59,15 @@ class TaskRecycler(private val tasks: List<Task>): RecyclerView.Adapter<TaskRecy
         var taskTitle = tasks[position].title
         var colour = ""
         var moduleName = ""
-        val database: SQLiteDatabase = ModuleSQLiteDBHelper(holder.itemView.context).readableDatabase
-        val cursorModule = database.rawQuery("SELECT colour, module_name \n" +
-                "FROM module \n" +
-                "INNER JOIN tasks ON module.module_id = tasks.module_id \n" +
-                "WHERE module.module_id IN (SELECT module_id from module_sessions where task_title = '$taskTitle')", null)
+        val database: SQLiteDatabase =
+            ModuleSQLiteDBHelper(holder.itemView.context).readableDatabase
+        val cursorModule = database.rawQuery(
+            "SELECT colour, module_name \n" +
+                    "FROM module \n" +
+                    "INNER JOIN tasks ON module.module_id = tasks.module_id \n" +
+                    "WHERE module.module_id IN (SELECT module_id from module_sessions where task_title = '$taskTitle')",
+            null
+        )
         if (cursorModule.moveToFirst()) {
             colour = cursorModule.getString(0)
             moduleName = cursorModule.getString(1)
@@ -122,7 +127,7 @@ class TaskRecycler(private val tasks: List<Task>): RecyclerView.Adapter<TaskRecy
                     )
                 )
             }
-            "YELLOW" ->{
+            "YELLOW" -> {
                 holder.taskTitle.setBackgroundColor(
                     ContextCompat.getColor(
                         holder.taskTitle.context,
@@ -307,12 +312,12 @@ class TaskRecycler(private val tasks: List<Task>): RecyclerView.Adapter<TaskRecy
         }
 
         holder.arrow.setOnClickListener {
-            if(holder.arrow.rotation == 0F){
+            if (holder.arrow.rotation == 0F) {
                 holder.arrow.rotation = 90F
                 holder.taskType.isVisible = true
                 holder.taskNote.isVisible = true
                 holder.taskModule.isVisible = true
-            }else{
+            } else {
                 holder.arrow.rotation = 0F
                 holder.taskType.isVisible = false
                 holder.taskNote.isVisible = false
@@ -323,7 +328,7 @@ class TaskRecycler(private val tasks: List<Task>): RecyclerView.Adapter<TaskRecy
         holder.cbTask.setOnCheckedChangeListener { _, isChecked ->
             holder.cbTask.isChecked = isChecked
             tasks[position].checked = isChecked
-            updateTask(tasks[position],holder, moduleName, isChecked)
+            updateTask(tasks[position], holder, moduleName, isChecked)
         }
 
     }
@@ -340,7 +345,7 @@ class TaskRecycler(private val tasks: List<Task>): RecyclerView.Adapter<TaskRecy
         val whereClause = "task_title='$title'"
         database.update(ModuleSQLiteDBHelper.TASKS_TABLE, values, whereClause, arrayOf())
         database.close()
-        deleteTask(title)
+        deleteTask(title, holder.itemView.context)
 
         val userId = Firebase.auth.currentUser!!.uid
 
@@ -348,11 +353,11 @@ class TaskRecycler(private val tasks: List<Task>): RecyclerView.Adapter<TaskRecy
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun deleteTask(taskSelected: String) {
+    fun deleteTask(taskSelected: String , context : Context) {
         val userId = Firebase.auth.currentUser!!.uid
         val dbRef = FirebaseDatabase.getInstance().getReference("Modules")
         val queryRef: Query =
-            dbRef.child(userId).orderByValue()//.orderByChild("moduleTasks/title").equalTo(taskSelected)
+            dbRef.child(userId).orderByValue()
 
         queryRef.addChildEventListener(object : ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previousChild: String?) {
@@ -377,26 +382,6 @@ class TaskRecycler(private val tasks: List<Task>): RecyclerView.Adapter<TaskRecy
             override fun onCancelled(error: DatabaseError) {
             }
         })
-    }
-
-    @SuppressLint("Range")
-    fun writeNewTaskToSQLite(task: Task, moduleName : String, holder : ToDoAdaptor.ToDoViewHolder) {
-
-        val db: SQLiteDatabase = ModuleSQLiteDBHelper(holder.itemView.context).readableDatabase
-        val cursor = db.rawQuery( "SELECT module_id FROM module WHERE module_name = '$moduleName'",null)
-        cursor.moveToFirst()
-        var moduleId = cursor.getInt(0)
-        cursor.close()
-
-        println(task.toString())
-        //write module
-        val database: SQLiteDatabase = ModuleSQLiteDBHelper(holder.itemView.context).writableDatabase
-        val values = ContentValues()
-        values.put(
-            ModuleSQLiteDBHelper.MODULE_COLUMN_ID,
-            task.checked
-        )
-        val newRowId = database.insert(ModuleSQLiteDBHelper.TASKS_TABLE, null, values)
     }
 
     fun writeNewTaskToDB(userId: String, task: Task, moduleName: String) {
