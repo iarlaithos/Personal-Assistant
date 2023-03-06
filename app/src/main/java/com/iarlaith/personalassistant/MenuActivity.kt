@@ -469,15 +469,12 @@ class MenuActivity : AppCompatActivity() {
                     // Sign in success, update UI with the signed-in user's information
                     println("Email Registered to DB")
                     Log.d(TAG, "createUserWithEmail:success")
-                    Toast.makeText(this@MenuActivity, "Email Registered to DB", Toast.LENGTH_SHORT).show()
                     val user = fireAuth.currentUser
                     updateUI(user)
                 } else {
                     // If sign in fails, display a message to the user.
                     println("Authentication failed.")
                     Log.w(TAG, "createUserWithEmail:failure", task.exception)
-                    Toast.makeText(this@MenuActivity, "Authentication failed.",
-                        Toast.LENGTH_SHORT).show()
                     updateUI(null)
                 }
             }
